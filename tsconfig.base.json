@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "module" : "nodenext",
+        "outDir": "dist",
+        "rootDir": ".",
+        "baseUrl": ".",
+        "strict": true,
+        "noUnusedLocals": true,        // errors on unused variables
+        "noUnusedParameters": true, 
+        "noImplicitAny": true,         // disallow implicit 'any' type
+        "strictNullChecks": true,      // ensures null/undefined are checked
+        "strictFunctionTypes": true,  // ensures function type compatibility
+        "skipLibCheck": true, // skip type checking of declaration files
+        "sourceMap": true,    
+        "moduleResolution": "nodenext",
+        "esModuleInterop": true,
+        "declaration": true,
+        "paths": {
+            "@project/shared": ["shared/dist/universal/*"],
+            "@project/shared/server": ["shared/dist/server/*"]
+        },
+    },
+    
+    "exclude": ["node_modules","dist"]
+}

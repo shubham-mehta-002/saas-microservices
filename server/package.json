@@ -1,0 +1,35 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "This is a microservice backend for project",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm:dev-api\" \"npm:dev-auth\" \"npm:dev-product\"",
+    "dev-service-discovery": "consul agent -dev",
+    "dev-api": "nodemon --watch api-gateway/src --ext ts --exec \"tsc -p api-gateway/tsconfig.json && node api-gateway/dist/index.js\"",
+    "dev-auth": "nodemon --watch services/auth-service/src --ext ts --exec \"tsc -p services/auth-service/tsconfig.json && node services/auth-service/dist/index.js\"",
+    "dev-product": "nodemon --watch services/product-service/src --ext ts --exec \"tsc -p services/product-service/tsconfig.json && node services/product-service/dist/index.js\"",
+    "dev-shared": "tsc -b shared --watch",
+    "build": "tsc -p tsconfig.json",
+    "start-api": "node dist/api-gateway/index.js",
+    "start-auth": "node dist/services/auth-service/index.js"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/consul": "^0.40.3",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/nodemailer": "^7.0.3"
+  },
+  "dependencies": {
+    "consul": "^2.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.3",
+    "nodemailer": "^7.0.10",
+    "redis": "^5.9.0"
+  }
+}

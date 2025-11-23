@@ -1,0 +1,36 @@
+{
+  "name": "@project/shared",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports" : {
+    "." : "./dist/universal/index.js",
+    "./server" : "./dist/server/index.js"
+  },
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec \"tsc && node dist/index.js\"",
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -b --watch",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/consul": "^0.40.3",
+    "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/nodemailer": "^7.0.3"
+  },
+  "dependencies": {
+    "consul": "^2.0.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.3",
+    "nodemailer": "^7.0.10",
+    "redis": "^5.9.0",
+    "zod": "^4.1.12"
+  }
+}

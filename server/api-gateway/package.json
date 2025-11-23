@@ -1,0 +1,31 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec \"tsc -p tsconfig.json && node dist/index.js\"",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-http-proxy": "^2.1.2",
+    "express-rate-limit": "^8.2.1",
+    "mongoose": "^8.19.3",
+    "@project/shared": "*" 
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express-http-proxy": "^1.6.7"
+  }
+}

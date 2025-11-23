@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "./api-gateway" },
+    { "path": "./services/auth-service" },
+    { "path": "./services/product-service" }
+  ]
+}
