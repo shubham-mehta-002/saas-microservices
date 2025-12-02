@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Header,QueryClientProviderWrapper } from "@/src/components";
+import { Header,QueryClientProviderWrapper ,ToastProvider} from "@/src/components";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,6 +18,7 @@ export default function RootLayout({
       <body className="">
         <QueryClientProviderWrapper>
         <>
+          <ToastProvider /> 
           <Header />
           {children}
         </>

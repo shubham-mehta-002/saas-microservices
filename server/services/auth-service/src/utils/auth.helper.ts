@@ -1,7 +1,7 @@
 import { redisClient, ValidationError} from "@project/shared/server";
 import { sendOtpMail } from "./mail/mail.helper.js";
 import crypto from "crypto";
-import { OTP_EXPIRY_TIME, OTP_LENGTH, RESEND_OTP_COOLDOWN } from "../config/constants.js";
+import {OTP_EXPIRY_TIME,OTP_LENGTH,RESEND_OTP_COOLDOWN} from "@project/shared"
 
 export const checkOtpRestrictions = async({email} : {email:string}) => {
     email = email.trim().toLowerCase();

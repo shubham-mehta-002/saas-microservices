@@ -8,7 +8,7 @@ type PropsType = {
   placeholder?: string;
   type?: "text" | "password" | "email" | "number";
   label: string;
-  onChangeHandler : (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeHandler? : (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?:string;
 } & InputHTMLAttributes<HTMLInputElement>;
 

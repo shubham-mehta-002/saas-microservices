@@ -9,10 +9,10 @@ export const errorMiddleware = (error: Error, _req: Request, res: Response, _nex
 	// Handle custom AppError
 	if (error instanceof AppError) {
 		return sendApiResponse({
-		res,
-		statusCode: error.statusCode,
-		message: error.message,
-		error: error.details || undefined
+			res,
+			statusCode: error.statusCode,
+			message: error.message,
+			error: error.details || undefined
 		});
 	}
 
@@ -24,10 +24,10 @@ export const errorMiddleware = (error: Error, _req: Request, res: Response, _nex
 		}));
 
 		return sendApiResponse({
-		res,
-		statusCode: 400,
-		message: "Validation failed",
-		error: formattedErrors
+			res,
+			statusCode: 400,
+			message: "Validation failed",
+			error: formattedErrors
 		});
 	}
 

@@ -1,18 +1,19 @@
 import { Request, Response } from "express"
-import { loginUserSchema, registerUserSchema, verifyUserSchema, forgotPasswordSchema, resetPasswordSchema, verifyResetPasswordOtpSchema } from "@project/shared"
+import { loginUserSchema, sendOtpSchema , verifyOtpSchema, forgotPasswordSchema, resetPasswordSchema, verifyResetPasswordOtpSchema } from "@project/shared"
 import {User} from "../model/user.model.js";
 import { asyncHandler, ValidationError,sendApiResponse , redisClient} from "@project/shared/server";
 import {checkOtpRestrictions, sendOtp, verifyOtp} from "../utils/auth.helper.js";
 import { PASSWORD_RESET_TOKEN_EXPIRY } from "../config/constants.js";
 import jwt from "jsonwebtoken";
 
-export const registerUser = asyncHandler(async( req : Request , res:Response) => {
-	const {email} = registerUserSchema.parse(req.body);
+// for sending OTP 
+export const registerSendOtp = asyncHandler(async( req : Request , res:Response) => {
+	const {email} = sendOtpSchema.parse(req.body);
 	
 	// check if user already exisits with same email
 	const existingUser = await User.findOne({email});
 	if(existingUser){
-		throw new ValidationError("Email already registered...");
+		throw new ValidationError("Email already registered");
 	}
 
 	await checkOtpRestrictions({email}); 
@@ -21,10 +22,10 @@ export const registerUser = asyncHandler(async( req : Request , res:Response) =>
 	return sendApiResponse({statusCode:200,message:"OTP sent !! Please verify your account",res})
 })
 
-
-export const verifyUser = asyncHandler(async(req:Request, res:Response) => {
+// for verifying OTP and creating a new user based on signup details 
+export const registerVerifyOtp  = asyncHandler(async(req:Request, res:Response) => {
 	
-	const validatedData = verifyUserSchema.parse(req.body);
+	const validatedData = verifyOtpSchema.parse(req.body);
 	const {otp , ...userDetails} = validatedData;
 	
 	// check if user already exists

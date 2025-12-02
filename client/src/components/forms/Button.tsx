@@ -1,17 +1,19 @@
 'use client';
+
+import { ButtonHTMLAttributes, MouseEventHandler } from "react";
 type PropsType = {
     label : string;
-    onClick?: () => void;
-    type? : "button" | "submit" | "reset";
-    className? : string;
-};
-export function Button({label, type="button", onClick, className} : PropsType){
+} & ButtonHTMLAttributes<HTMLButtonElement>;
+
+export function Button({label, type="button", onClick, className,...rest} : PropsType){
     return(
         <button
             type={type}
             onClick={onClick}
-            className={`p-2 border rounded-md  cursor-pointer transition duration-200 ${className ?? ""}`}
-            >{label}
+            className={`p-2 border rounded-md  transition duration-200 ${className ?? ""}`}
+            {...rest}
+        >
+            {label}
         </button>
     )
 }

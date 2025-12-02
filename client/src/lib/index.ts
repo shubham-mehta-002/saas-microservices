@@ -1,2 +1,3 @@
 export { queryClient} from "./react-query/queryClient";
-export {axiosClient} from "./axios/client";
+export {axiosInstance} from "./axios/client";
+export * from "./toast/toast"

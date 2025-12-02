@@ -2,7 +2,7 @@
 
 import axios from "axios"
 
-const axiosClient  = axios.create({
+const axiosInstance  = axios.create({
     baseURL : process.env.NEXT_PUBLIC_BASE_URL,
     withCredentials : true,
     headers : {
@@ -11,7 +11,7 @@ const axiosClient  = axios.create({
 });
 
 
-// axiosClient.interceptors.request.use
+// axiosInstance.interceptors.request.use
 
 
-export {axiosClient};
+export {axiosInstance};

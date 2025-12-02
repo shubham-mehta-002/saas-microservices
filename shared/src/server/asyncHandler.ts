@@ -7,7 +7,8 @@ export const asyncHandler = (fn : asyncFnType) => {
         try{    
             await fn(req,res,next);
         }catch(err){
-            throw(err);
+            console.log("Catching erorr", {err})
+            next(err);
         }
     }
 }

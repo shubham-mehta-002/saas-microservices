@@ -1,7 +1,10 @@
 import {z} from "zod"
 import { OTP_LENGTH } from "../constants.js";
 
-const passwordValidation = z.string()
+
+// consider sending OTP as register and verifying-otp as ...
+
+export const passwordValidation = z.string()
   .min(8, "Password must be at least 8 characters long")
   .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
   .regex(/[a-z]/, "Password must contain at least one lowercase letter")
@@ -12,26 +15,29 @@ const passwordValidation = z.string()
 )
 
 export const registerUserSchema = z.object({
+  email : z.email("Invalid email address"),
+  password : passwordValidation,
+  confirmPassword : z.string(),
+}).refine((data) => data.password === data.confirmPassword , {
+  message : "Passwords donot match",
+  path : ["confirmPassword"]
+})
+
+
+export const sendOtpSchema  = z.object({
   email : z.email("Invalid email address")
 })
 
-export const verifyUserSchema = z.object({
-    name : z.string().min(2, "Name must be atleast 2 characters"),
-    email : z.email("Invalid email address"),
-    password : passwordValidation,
-    confirmPassword : z.string(),
-    otp : z.string().length(OTP_LENGTH, `OTP must be ${OTP_LENGTH} characters long`)
-})
-.refine((data) => data.password === data.confirmPassword, {
-    message : "Passwords donot match",
-    path : ["confirmPassword"]
-})
-.transform(({confirmPassword, ...rest}) => rest);
+export const verifyOtpSchema = registerUserSchema
+  .safeExtend({
+    otp: z.string().length(OTP_LENGTH,`OTP must be ${OTP_LENGTH} characters long`)
+  })
+  // .omit({ confirmPassword: true });
 
 
 export const loginUserSchema = z.object({
   email : z.email("Invalid email address"),
-  password : z.string()
+  password : z.string().nonempty("Password is required")
 })
 
 
@@ -52,5 +58,6 @@ export const resetPasswordSchema = z.object({
 }).refine((data) => data.newPassword === data.confirmNewPassword, {
   message : "Passwords donot match",
   path : ["confirmNewPassword"]
-}).transform(({confirmNewPassword, ...rest}) => rest);
+})
+// .transform(({confirmNewPassword, ...rest}) => rest);
 

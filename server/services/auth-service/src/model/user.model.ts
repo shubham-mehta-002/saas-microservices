@@ -1,12 +1,11 @@
 import { mongooseInstance } from "@project/shared/server";
 import bcrypt from "bcrypt";
 import jwt,{SignOptions} from "jsonwebtoken";
-// import { NextFunction } from "express";
-// import {HookNextFunction} from "mongoose"
+
 
 type userRoles = 'user' | 'seller' | 'admin';
 export interface IUser extends Document {
-    name : string,
+    name? : string,
     email : string,
     password : string,
     role : userRoles,
@@ -16,7 +15,7 @@ export interface IUser extends Document {
 }
 
 const userSchema = new mongooseInstance.Schema<IUser>({
-    name: { type: String, required: true },
+    name: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role : {type: String, enum: ['user','seller','admin'] ,default : 'user'}

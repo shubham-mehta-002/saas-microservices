@@ -1,23 +1,32 @@
 'use client';
-import { Input, Button, Error, OTPInput } from "@/src/components"
+import { Input, Button, Error } from "@/src/components"
 import { useForm } from "react-hook-form";
-import {loginValidationSchema} from "./validations"
 import { zodResolver} from "@hookform/resolvers/zod";
 import Link from "next/link";
-
-type FormData = {
-    email : string;
-    password : string;
-}
+import {loginUserType, loginUserSchema} from "@project/shared"
+import { useLoginMuations } from "@/src/hooks";
+import { successToast } from "@/src/lib";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage(){
-    const OTP_LENGTH = 6;
-    const {register, handleSubmit, formState: {errors}, watch} = useForm<FormData>({
-        resolver : zodResolver(loginValidationSchema)
+    const {register, handleSubmit, formState: {errors}} = useForm<loginUserType>({
+        resolver : zodResolver(loginUserSchema)
     });
-   
-    const onSubmit = (data : FormData) => {
-        console.log({data})
+
+    const loginMutation = useLoginMuations()
+    const isLoginPending = loginMutation.isPending; 
+    
+    const router = useRouter();
+    const onSubmit = (data : loginUserType) => {
+        loginMutation.mutate({
+            ...data
+        },{
+            onSuccess : () => {
+                successToast("Login Successfull")
+                router.push('/')
+            }
+            
+        })
     } 
 
     return (
@@ -35,7 +44,6 @@ export default function LoginPage(){
                         label="Email" 
                         type="text" 
                         placeholder="Enter your email" 
-                        onChangeHandler={()=>{console.log("ASD")}}
                         {...register("email")}
                         error = {errors.email?.message}
                     />
@@ -43,7 +51,6 @@ export default function LoginPage(){
                         label="Password" 
                         type="password" 
                         placeholder="Enter your password" 
-                        onChangeHandler={()=>{console.log("ASD")}}
                         {...register("password")}
                         error={errors.password?.message}
                     />
@@ -56,7 +63,7 @@ export default function LoginPage(){
                         <span className="text-sm flex justify-end my-1 hover:underline cursor-pointer">Forget Password?</span>
                     </Link>
                 </div>
-                <Button label="Login" type="submit" className="mt-3"/>
+                <Button label={isLoginPending ? "Logging" : "Log In"} type="submit" disabled={isLoginPending} className={`mt-3 ${isLoginPending ? "cursor-not-allowed" : "cursor-pointer"}`}/>
             </div>
             <Error message = {errors.root?.message || ""}/>
         </form>
