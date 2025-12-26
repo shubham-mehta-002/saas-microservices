@@ -1,5 +1,7 @@
-import { getOtpTemplate } from "./mail.templates.js";
+import { getForgetPasswordRequestTemplate, getOtpTemplate } from "./mail.templates.js";
 import { sendMail } from "@project/shared/server";
+
+
 
 export const sendOtpMail = async({email,otp,otpExpiryTime,subject}: {email:string , otp : string, otpExpiryTime : number,subject:string}) => {
     await sendMail({
@@ -7,4 +9,12 @@ export const sendOtpMail = async({email,otp,otpExpiryTime,subject}: {email:strin
         subject : subject,
         html :  getOtpTemplate(otp,otpExpiryTime,subject)
     });
+}
+
+export const sendForgetPasswordRequestMail = async({email,resetLink,tokenExpiryTime,subject} : {email:string,resetLink : string,tokenExpiryTime:number,subject:string}) => {
+    await sendMail({
+        to: email,
+        subject : subject,
+        html : getForgetPasswordRequestTemplate({resetLink, tokenExpiryTime,subject})
+    })
 }

@@ -3,8 +3,8 @@ import { AppError } from './errors.js';
 import { ZodError } from 'zod';
 import { sendApiResponse } from '../response.js';
 
+// const {JsonWebTokenError, TokenExpiredError} = jwt;
 export const errorMiddleware = (error: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.log("This is the error: ", { error });
 
 	// Handle custom AppError
 	if (error instanceof AppError) {
@@ -31,6 +31,16 @@ export const errorMiddleware = (error: Error, _req: Request, res: Response, _nex
 		});
 	}
 
+	if(error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError'){
+		return sendApiResponse({
+			res,
+			statusCode: 400,
+			message: "Token Invalid or Expired",
+			error: error
+		});
+	}
+
+	
 	// Handle generic errors
 	return sendApiResponse({
 		res,

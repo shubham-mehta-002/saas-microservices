@@ -2,13 +2,16 @@ import { redisClient, ValidationError} from "@project/shared/server";
 import { sendOtpMail } from "./mail/mail.helper.js";
 import crypto from "crypto";
 import {OTP_EXPIRY_TIME,OTP_LENGTH,RESEND_OTP_COOLDOWN} from "@project/shared"
+import { PASSWORD_RESET_TOKEN_EXPIRY } from "../config/constants.js";
+import { sendForgetPasswordRequestMail } from "./mail/mail.helper.js";
+
 
 export const checkOtpRestrictions = async({email} : {email:string}) => {
-    email = email.trim().toLowerCase();
-
-    const cooldownKey = `otp_cooldown:${email}`;
-    const cooldownTTL = await redisClient.ttl(cooldownKey);
-
+  email = email.trim().toLowerCase();
+  
+  const cooldownKey = `otp_cooldown:${email}`;
+  const cooldownTTL = await redisClient.ttl(cooldownKey);
+  
     if (cooldownTTL > 0) {
         throw new ValidationError(`Please wait ${cooldownTTL} seconds before requesting a new OTP`);
     }
@@ -33,12 +36,30 @@ export const verifyOtp = async({otp,email} : {otp:string, email:string}) :Promis
   if(!storedHasedOtp){
     throw new ValidationError("OTP expired or invalid");
   }
-
+  
   const incomingHashedOtp = hashOtp(otp);
   if(incomingHashedOtp != storedHasedOtp){
     throw new ValidationError("Invalid OTP ");
   }
-
+  
   // OTP is valid , delete it from redis
   await redisClient.del(`otp:${email}`);
 }
+
+
+export const sendForgetPasswordRequestMailHepler = async({email , resetPasswordToken, userId} : {email:string, resetPasswordToken:string, userId : string}) => {
+  
+  const baseURL = process.env.CLIENT_URL as string;
+  const resetLink = `${baseURL}/reset-password?token=${resetPasswordToken}`
+	
+  // save in redis
+  await redisClient.set(`reset_password_token:${userId}`, resetPasswordToken , {EX : PASSWORD_RESET_TOKEN_EXPIRY / 1000}); 
+  
+  sendForgetPasswordRequestMail({
+    email,
+    resetLink,
+    subject : "Reset Password Request Mail",
+    tokenExpiryTime : PASSWORD_RESET_TOKEN_EXPIRY/(60*1000),
+  })
+}
+

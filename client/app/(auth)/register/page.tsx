@@ -1,9 +1,9 @@
 'use client';
-import { Input, Button, OTPInput } from "@/src/components"
+import { Input, Button, OTPInput ,Error} from "@/src/components"
 import Link from "next/link";
 import { MouseEvent, useEffect, useState } from "react";
 import { OTP_LENGTH , registerUserType, registerUserSchema, RESEND_OTP_COOLDOWN} from "@project/shared";
-import {useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSendRegisterOtpMuation, useVerifyRegisterOtpMutation } from "@/src/hooks";
 import { errorToast, successToast } from "@/src/lib";
@@ -13,10 +13,9 @@ import { useRouter } from "next/navigation";
 export default function SignupPage(){
     const router = useRouter();
 
-    const [showOtpField , setShowOtpField] = useState<boolean>(!true);
+    const [showOtpField , setShowOtpField] = useState<boolean>(false);
     const [otp, setOtp] = useState<string[]>(new Array(OTP_LENGTH).fill(''));
     const [userDetails, setUserDetails] = useState<registerUserType | null>(null);
-    const [canResendOtp , setCanResendOtp] = useState<boolean>(false)  
     const [resendOtpTimer,setResendOtpTimer] = useState<number>(0);
 
     const {register, handleSubmit,getValues ,formState: {errors, isSubmitting}}  = useForm<registerUserType>({
@@ -28,16 +27,15 @@ export default function SignupPage(){
 
     const sendOtpHandler = () => {
         const data = getValues()
-        console.log({data})
         sendOtpMutation.mutate({
             email : data.email
         },{
             onSuccess : () => {
-                successToast("OTP Sent")
                 setShowOtpField(true);
                 setUserDetails(data);
                 setResendOtpTimer(RESEND_OTP_COOLDOWN)
                 startResendOtpTimer();
+                successToast("OTP Sent")
             }
         })
     }
@@ -73,8 +71,8 @@ export default function SignupPage(){
         }
         verifyOtpMutation.mutate({...data},{
             onSuccess : () => {
-                successToast("Registered Successfully")
                 router.push("/login")
+                successToast("Registered Successfully")
             }
         });
     }
@@ -104,8 +102,11 @@ export default function SignupPage(){
                     <Link href={"/login"}>
                         <span className="text-sm hover:underline cursor-pointer flex mt-2 justify-center">Already Have any account?</span>
                     </Link>
+                    <Error message = {errors.root?.message || ""}/>
                     {resendOtpTimer > 0 && <span className="align-right text-sm underline cursor-pointer" onClick={()=>setShowOtpField(true)}>OTP</span>}
-                </form> }
+                </form> 
+                }
+                
                 {showOtpField && 
                     <div className="otp-wrapper">
                         <div className="flex flex-col items-center justify-center">

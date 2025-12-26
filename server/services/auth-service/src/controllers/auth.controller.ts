@@ -1,14 +1,13 @@
 import { Request, Response } from "express"
-import { loginUserSchema, sendOtpSchema , verifyOtpSchema, forgotPasswordSchema, resetPasswordSchema, verifyResetPasswordOtpSchema } from "@project/shared"
+import { loginUserSchema, registerOtpRequestSchema , verifyOtpSchema, forgotPasswordRequestSchema, resetPasswordSchema } from "@project/shared"
 import {User} from "../model/user.model.js";
 import { asyncHandler, ValidationError,sendApiResponse , redisClient} from "@project/shared/server";
-import {checkOtpRestrictions, sendOtp, verifyOtp} from "../utils/auth.helper.js";
-import { PASSWORD_RESET_TOKEN_EXPIRY } from "../config/constants.js";
+import {checkOtpRestrictions, sendForgetPasswordRequestMailHepler, sendOtp, verifyOtp} from "../utils/auth.helper.js";
 import jwt from "jsonwebtoken";
 
 // for sending OTP 
 export const registerSendOtp = asyncHandler(async( req : Request , res:Response) => {
-	const {email} = sendOtpSchema.parse(req.body);
+	const {email} = registerOtpRequestSchema.parse(req.body);
 	
 	// check if user already exisits with same email
 	const existingUser = await User.findOne({email});
@@ -82,39 +81,40 @@ export const loginUser = asyncHandler(async(req:Request, res:Response) => {
 
 
 export const forgotPassword = asyncHandler(async(req:Request,res:Response) => {
-	const {email} = forgotPasswordSchema.parse(req.body); 
+	const {email} = forgotPasswordRequestSchema.parse(req.body); 
 	
 	const existingUser = await User.findOne({email});
 	if(!existingUser){
 		throw new ValidationError("User does not exist with this email");
 	}
-
-	await checkOtpRestrictions({email}); 
-	await sendOtp({email,subject:"Password Reset OTP"}); 
-
-	return sendApiResponse({statusCode:200,message:"OTP sent !! Please check your email to reset password",res});
-})
-
-
-export const verifyResetPasswordOtp = asyncHandler(async(req:Request, res:Response)=>{
-	const {email,otp} = verifyResetPasswordOtpSchema.parse(req.body);
-	
-	// check if user already exists
-	const existingUser = await User.findOne({email});
-	if(!existingUser){
-		throw new ValidationError("User does not exist with this email");
-	}
-
-	// verify OTP
-	await verifyOtp({otp,email});
-
+	// return sendApiResponse({statusCode:200,message:"OTP sent !! Please check your email to reset password",res});
 	const resetPasswordToken = existingUser.generateResetPasswordToken();
+	await sendForgetPasswordRequestMailHepler({email,resetPasswordToken,userId:(existingUser._id).toString()})
 
-	// save in redis
-	await redisClient.set(`reset_password_token:${existingUser._id}`, resetPasswordToken , {EX : PASSWORD_RESET_TOKEN_EXPIRY / 1000}); 
+	return sendApiResponse({statusCode : 200, message : "Please check your email to reset password" ,data : {token : resetPasswordToken},res});
 
-	return sendApiResponse({statusCode : 200, message : "OTP verified. Use resetToken to reset password" ,data : {token : resetPasswordToken},res});
 })
+
+
+// export const verifyResetPasswordOtp = asyncHandler(async(req:Request, res:Response)=>{
+// 	const {email,otp} = verifyResetPasswordOtpSchema.parse(req.body);
+	
+// 	// check if user already exists
+// 	const existingUser = await User.findOne({email});
+// 	if(!existingUser){
+// 		throw new ValidationError("User does not exist with this email");
+// 	}
+
+// 	// verify OTP
+// 	await verifyOtp({otp,email});
+
+// 	const resetPasswordToken = existingUser.generateResetPasswordToken();
+
+// 	// save in redis
+// 	await redisClient.set(`reset_password_token:${existingUser._id}`, resetPasswordToken , {EX : PASSWORD_RESET_TOKEN_EXPIRY / 1000}); 
+
+// 	return sendApiResponse({statusCode : 200, message : "OTP verified. Use resetToken to reset password" ,data : {token : resetPasswordToken},res});
+// })
 
 
 export const resetPassword = asyncHandler(async(req:Request, res:Response)=> {

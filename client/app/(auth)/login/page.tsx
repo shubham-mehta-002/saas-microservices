@@ -59,8 +59,8 @@ export default function LoginPage(){
                     <Link href={"/register"}>
                         <span className="text-sm flex justify-end my-1 hover:underline cursor-pointer">Don't have an account?</span>
                     </Link>
-                    <Link href={'/forget-password'}>
-                        <span className="text-sm flex justify-end my-1 hover:underline cursor-pointer">Forget Password?</span>
+                    <Link href={'/forgot-password'}>
+                        <span className="text-sm flex justify-end my-1 hover:underline cursor-pointer">forgot Password?</span>
                     </Link>
                 </div>
                 <Button label={isLoginPending ? "Logging" : "Log In"} type="submit" disabled={isLoginPending} className={`mt-3 ${isLoginPending ? "cursor-not-allowed" : "cursor-pointer"}`}/>

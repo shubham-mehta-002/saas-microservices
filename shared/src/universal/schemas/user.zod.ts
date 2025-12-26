@@ -2,8 +2,6 @@ import {z} from "zod"
 import { OTP_LENGTH } from "../constants.js";
 
 
-// consider sending OTP as register and verifying-otp as ...
-
 export const passwordValidation = z.string()
   .min(8, "Password must be at least 8 characters long")
   .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
@@ -14,6 +12,11 @@ export const passwordValidation = z.string()
     "Password must contain at least one special character"
 )
 
+export const registerOtpRequestSchema  = z.object({
+  email : z.email("Invalid email address")
+})
+
+
 export const registerUserSchema = z.object({
   email : z.email("Invalid email address"),
   password : passwordValidation,
@@ -21,19 +24,12 @@ export const registerUserSchema = z.object({
 }).refine((data) => data.password === data.confirmPassword , {
   message : "Passwords donot match",
   path : ["confirmPassword"]
-})
-
-
-export const sendOtpSchema  = z.object({
-  email : z.email("Invalid email address")
-})
+})  
 
 export const verifyOtpSchema = registerUserSchema
   .safeExtend({
     otp: z.string().length(OTP_LENGTH,`OTP must be ${OTP_LENGTH} characters long`)
   })
-  // .omit({ confirmPassword: true });
-
 
 export const loginUserSchema = z.object({
   email : z.email("Invalid email address"),
@@ -41,14 +37,8 @@ export const loginUserSchema = z.object({
 })
 
 
-export const forgotPasswordSchema = z.object({
+export const forgotPasswordRequestSchema = z.object({
   email : z.email("Invalid email address")
-})
-
-
-export const verifyResetPasswordOtpSchema = z.object({
-  email : z.email("Invalid email address"),
-  otp : z.string().length(OTP_LENGTH, `OTP must be ${OTP_LENGTH} characters long`)
 })
 
 export const resetPasswordSchema = z.object({
@@ -59,5 +49,3 @@ export const resetPasswordSchema = z.object({
   message : "Passwords donot match",
   path : ["confirmNewPassword"]
 })
-// .transform(({confirmNewPassword, ...rest}) => rest);
-
