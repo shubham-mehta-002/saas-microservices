@@ -7,6 +7,7 @@ import {loginUserType, loginUserSchema} from "@project/shared"
 import { useLoginMuations } from "@/src/hooks";
 import { successToast } from "@/src/lib";
 import { useRouter } from "next/navigation";
+import { GoogleLoginButton } from "@/src/components";
 
 export default function LoginPage(){
     const {register, handleSubmit, formState: {errors}} = useForm<loginUserType>({
@@ -67,6 +68,9 @@ export default function LoginPage(){
             </div>
             <Error message = {errors.root?.message || ""}/>
         </form>
+
+        <GoogleLoginButton/>
+       
        </>
     )
 }

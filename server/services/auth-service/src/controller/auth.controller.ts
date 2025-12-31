@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { loginUserSchema, registerOtpRequestSchema , verifyOtpSchema, forgotPasswordRequestSchema, resetPasswordSchema } from "@project/shared"
 import {User} from "../model/user.model.js";
-import { asyncHandler, ValidationError,sendApiResponse , redisClient} from "@project/shared/server";
+import { asyncHandler, ValidationError,sendApiResponse , redisClient, AuthenticationError} from "@project/shared/server";
 import {checkOtpRestrictions, sendForgetPasswordRequestMailHepler, sendOtp, verifyOtp} from "../utils/auth.helper.js";
 import jwt from "jsonwebtoken";
 
@@ -54,6 +54,11 @@ export const loginUser = asyncHandler(async(req:Request, res:Response) => {
 	if(!existingUser){
 		throw new ValidationError("Invalid email or password");
 	}
+	
+	// check auth provider
+	if (existingUser.authProvider === "google") {
+		throw new ValidationError("Please login using Google");
+	}
 
 	// check password
 	const isPasswordValid = await existingUser.comparePassword(password);
@@ -95,28 +100,6 @@ export const forgotPassword = asyncHandler(async(req:Request,res:Response) => {
 
 })
 
-
-// export const verifyResetPasswordOtp = asyncHandler(async(req:Request, res:Response)=>{
-// 	const {email,otp} = verifyResetPasswordOtpSchema.parse(req.body);
-	
-// 	// check if user already exists
-// 	const existingUser = await User.findOne({email});
-// 	if(!existingUser){
-// 		throw new ValidationError("User does not exist with this email");
-// 	}
-
-// 	// verify OTP
-// 	await verifyOtp({otp,email});
-
-// 	const resetPasswordToken = existingUser.generateResetPasswordToken();
-
-// 	// save in redis
-// 	await redisClient.set(`reset_password_token:${existingUser._id}`, resetPasswordToken , {EX : PASSWORD_RESET_TOKEN_EXPIRY / 1000}); 
-
-// 	return sendApiResponse({statusCode : 200, message : "OTP verified. Use resetToken to reset password" ,data : {token : resetPasswordToken},res});
-// })
-
-
 export const resetPassword = asyncHandler(async(req:Request, res:Response)=> {
 	const {newPassword, resetToken} = resetPasswordSchema.parse(req.body);
 
@@ -142,4 +125,59 @@ export const resetPassword = asyncHandler(async(req:Request, res:Response)=> {
 	await redisClient.del(`reset_password_token:${user_id}`);
 
 	return sendApiResponse({statusCode:200,message:"Password reset successful !! You can now login with your new password",res});
+})
+
+
+export const logoutUser = asyncHandler(async(_req:Request,res:Response)=>{
+	// clear all cookies
+	res.clearCookie("accessToken" , {
+		httpOnly : true,
+		secure : true,
+		sameSite : "none"
+	});
+
+	res.clearCookie("refreshToken" , {
+		httpOnly : true,
+		secure : true,
+		sameSite : "none"
+	});
+	return sendApiResponse({statusCode:200,message:"Logged out successfully",res});
+})
+
+
+/**
+ * This controller handles the refresh token process in case the access token has expired.
+ * It verifies the provided refresh token, generates new access and refresh tokens,
+ * sets them as HTTP-only cookies, and sends a success response.
+ */
+export const refreshToken = asyncHandler(async (req:Request, res:Response) =>{
+	const refreshToken = req.cookies.refreshToken;
+	if(!refreshToken){
+		throw new ValidationError("Unauthorized. Please login again.");
+	}
+
+	const decoded = jwt.verify(refreshToken , process.env.REFRESH_TOKEN_SECRET as string) as {user_id:string,role:string};
+	if(!decoded || !decoded.user_id || !decoded.role){
+		throw new AuthenticationError("Unauthorized. Invalid Refresh Token")
+	}
+	const user = await User.findById(decoded.user_id);
+	if(!user){
+		throw new ValidationError("User not found. Please login again.");
+	}
+
+	const {accessToken : newAccessToken , refreshToken : newRefreshToken} = user.generateTokens();
+
+	res.cookie("accessToken" , newAccessToken , {
+		httpOnly : true,
+		secure : true,
+		maxAge : 15 * 60 * 1000, // 15 minutes
+		sameSite : "none"
+	});
+	res.cookie("refreshToken" , newRefreshToken , {
+		httpOnly : true,
+		secure : true,
+		maxAge : 24 * 60 * 60 * 1000, // 1 day
+		sameSite : "none"
+	});
+	return sendApiResponse({statusCode:200,message:"Tokens refreshed successfully",res});
 })

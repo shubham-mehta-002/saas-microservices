@@ -1,14 +1,8 @@
+import "./env.js";  
+
 import http from "http";
-import app from "./app.js";
-import dotenv from "dotenv"
-import path from 'path';
-import { fileURLToPath } from "url";
 import {cleanup, registerWithConsul , connectDb} from "@project/shared/server";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
+import app from "./app.js";
 
 // connect with db
 await connectDb(process.env.MONGO_URI as string)
@@ -21,7 +15,7 @@ const serviceName:string = 'auth-service'
 // Health check endpoint
 app.get('/health', (_req, res) => {
   res.status(200).send('OK');
-});
+}); 
 
 
 server.listen(PORT, async () => {

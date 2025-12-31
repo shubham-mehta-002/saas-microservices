@@ -33,7 +33,8 @@ app.use(express.json({limit : '100kb'}))
 app.use(express.urlencoded({limit : '100kb' , extended : true}))
 app.use(cookieParser())
 app.set('trust proxy', 1) // trust first proxy
-app.use(limiter)
+// app.use(limiter)
+console.log(typeof limiter)
 
 
 

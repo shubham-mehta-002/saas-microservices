@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Search, ShoppingCart, Heart } from "lucide-react";
 import { DropDown } from "./DropDown";
 import Link from "next/link";
+import { LogoutButton } from "@/src/components";
 
 export const Header = () => {
   const userLoggedIn = false;
@@ -40,6 +41,7 @@ export const Header = () => {
               Sign In
             </Link>
           )}
+          <LogoutButton />
           {userLoggedIn && (
             <div className="px-2 border-l border-gray-300 font-semibold">
               <DropDown

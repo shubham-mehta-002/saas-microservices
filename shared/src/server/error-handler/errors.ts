@@ -1,13 +1,23 @@
-class AppError extends Error{
-    constructor(message:string,public readonly  statusCode:number,public readonly  isOperational:boolean = true,public readonly  details?:any){
+class AppError extends Error {
+    public readonly statusCode: number;
+    public readonly isOperational: boolean;
+    public readonly details?: unknown;
+
+    constructor(
+        message: string,
+        statusCode: number,
+        isOperational: boolean = true,
+        details?: unknown
+    ) {
         super(message);
         this.statusCode = statusCode;
         this.isOperational = isOperational;
         this.details = details;
-        // Error.captureStackTrace(this,this.constructor);
+
+        // Maintains proper stack trace for where error was thrown
+        Error.captureStackTrace(this, this.constructor);
     }
 }
-
 // Rate Limiting Erorr
 class RateLimitError extends AppError{
     constructor(message:string = "Too many request ,please try again later"){
@@ -32,7 +42,7 @@ class AuthenticationError extends AppError{
 // Authorization Error
 class AuthorizationError extends AppError{
     constructor(message:string = "Forbidden", details?:any){
-        super(message,details)
+        super(message,403,true,details)
     }
 }
 
