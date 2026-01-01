@@ -22,9 +22,9 @@ app.get('/',(_req : Request,res:Response) => {
 }) 
 
 // Health check endpoint
-app.get('/health', (_req, res) => {
-  res.status(200).send('OK');
-});
+// app.get('/health', (_req, res) => {
+//   res.status(200).send('OK');
+// });
 
 
 export default app;

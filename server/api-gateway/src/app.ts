@@ -39,11 +39,11 @@ console.log(typeof limiter)
 
 
 const setupProxies = async () => {
-  const authProxy = await proxyMiddleware("auth-service");
-  const productProxy = await proxyMiddleware("product-service");
+  const authProxy = await proxyMiddleware("auth");
+//   const productProxy = await proxyMiddleware("product-service");
 
   app.use("/auth", authProxy);
-  app.use("/product", productProxy);
+//   app.use("/product", productProxy);
 };
 
 setupProxies(); 
