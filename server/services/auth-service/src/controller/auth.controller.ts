@@ -4,6 +4,7 @@ import {User} from "../model/user.model.js";
 import { asyncHandler, ValidationError,sendApiResponse , redisClient, AuthenticationError} from "@project/shared/server";
 import {checkOtpRestrictions, sendForgetPasswordRequestMailHepler, sendOtp, verifyOtp} from "../utils/auth.helper.js";
 import jwt from "jsonwebtoken";
+import { JwtPayload } from "../types/jwtPayload.js";
 
 // for sending OTP 
 export const registerSendOtp = asyncHandler(async( req : Request , res:Response) => {
@@ -50,7 +51,7 @@ export const loginUser = asyncHandler(async(req:Request, res:Response) => {
 	const {email, password} = validatedData;
 	
 	// check if user exists
-	const existingUser = await User.findOne({email});
+	const existingUser = await User.findOne({email}).select("+password");
 	if(!existingUser){
 		throw new ValidationError("Invalid email or password");
 	}
@@ -156,7 +157,8 @@ export const refreshToken = asyncHandler(async (req:Request, res:Response) =>{
 		throw new ValidationError("Unauthorized. Please login again.");
 	}
 
-	const decoded = jwt.verify(refreshToken , process.env.REFRESH_TOKEN_SECRET as string) as {user_id:string,role:string};
+	const decoded = jwt.verify(refreshToken , process.env.REFRESH_TOKEN_SECRET as string) as JwtPayload;
+	console.log({decoded})
 	if(!decoded || !decoded.user_id || !decoded.role){
 		throw new AuthenticationError("Unauthorized. Invalid Refresh Token")
 	}
@@ -180,4 +182,10 @@ export const refreshToken = asyncHandler(async (req:Request, res:Response) =>{
 		sameSite : "none"
 	});
 	return sendApiResponse({statusCode:200,message:"Tokens refreshed successfully",res});
+})
+
+
+export const getUser = asyncHandler(async(req:Request,res:Response) => {
+	const {user} = req;
+	return sendApiResponse({statusCode:201, message:"User details fetched",data:user,res});
 })

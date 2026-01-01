@@ -15,11 +15,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className="">
+      <body className="p-4">
         <QueryClientProviderWrapper>
         <>
           <ToastProvider /> 
-          <Header />
           {children}
         </>
         </QueryClientProviderWrapper>

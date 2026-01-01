@@ -34,18 +34,27 @@ export const errorMiddleware = (error: Error, _req: Request, res: Response, _nex
 	if(error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError'){
 		return sendApiResponse({
 			res,
-			statusCode: 400,
+			statusCode: 401,
 			message: "Token Invalid or Expired",
 			error: error
 		});
 	}
 
+	if (error instanceof Error) {
+        console.error(error); 
+        return sendApiResponse({
+            res,
+            statusCode: 500,
+            message: "Internal Server Error",
+            error: error.message
+        });
+    }
 	
-	// Handle generic errors
+	// Fallback for unknown errors
 	return sendApiResponse({
 		res,
 		statusCode: 500,
-		message: "Internal Server Error",
-		error: error.message || error
+		message: "Unknown Error",
+		error: error
 	});
 };

@@ -44,7 +44,7 @@ export const forgotPasswordRequestSchema = z.object({
 export const resetPasswordSchema = z.object({
   resetToken : z.string(),
   newPassword : passwordValidation,
-  confirmNewPassword : z.string()
+  confirmNewPassword : z.string().min(1, "Confirm password is required")
 }).refine((data) => data.newPassword === data.confirmNewPassword, {
   message : "Passwords donot match",
   path : ["confirmNewPassword"]

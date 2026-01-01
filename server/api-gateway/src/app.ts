@@ -1,4 +1,4 @@
-import cookieParser from "cookie-parser";
+// import cookieParser from "cookie-parser";
 import cors from "cors";
 import type { Request, Response } from "express";
 import express from "express";
@@ -31,7 +31,7 @@ app.use(cors(
 ))
 app.use(express.json({limit : '100kb'}))
 app.use(express.urlencoded({limit : '100kb' , extended : true}))
-app.use(cookieParser())
+// app.use(cookieParser())
 app.set('trust proxy', 1) // trust first proxy
 // app.use(limiter)
 console.log(typeof limiter)

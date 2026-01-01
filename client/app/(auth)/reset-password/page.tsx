@@ -5,17 +5,31 @@ import { useForm } from "react-hook-form";
 import {ResetPasswordFormType,resetPasswordFormSchema} from "./types"
 import { Input,Button, Error } from "@/src/components";
 import { useResetPasswordMutation } from "@/src/hooks";
-import { successToast } from "@/src/lib";
+import { errorToast, successToast } from "@/src/lib";
+import { useEffect } from "react";
 
 export default function ResetPasswordPage() {
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
 
-    if (!token) {
-        return <p className="">No token found ...</p>;
-    }
     const resetPasswordMutation = useResetPasswordMutation()
     const router = useRouter()
+    
+    useEffect(() => {
+        if (!token) {
+            errorToast("Reset link is invalid or expired");
+            router.replace("/forgot-password");
+        }
+    }, [token, router]);
+
+    /** Stop rendering form if token is missing */
+    if (!token) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <p className="text-gray-600">Redirecting...</p>
+            </div>
+        );
+    }
 
     const {getValues,register, formState:{errors} ,handleSubmit} = useForm<ResetPasswordFormType>({
         resolver: zodResolver(resetPasswordFormSchema)
@@ -24,7 +38,7 @@ export default function ResetPasswordPage() {
     const submitHandler = () => {
         const data = getValues();
         resetPasswordMutation.mutate({
-            resetToken : token,
+            resetToken : token? token : "",
             ...data
         },{
             onSuccess : (data : unknown) => {
@@ -37,11 +51,12 @@ export default function ResetPasswordPage() {
     return (  
         <div>
         <>
-            <div className="mt-30 w-full">
-                <div className="form-wrapper sm:w-1/3 mx-auto border pb-5 px-3 rounded-md shadow-lg mt-10 flex flex-col">
+            <div className="mt-44 w-full md:w-1/2 max-w-[500px] flex flex-col items-center justify-center mx-auto overflow-y-visible">
+                <div className="container border-2 border-black rounded-md shadow-lg px-4 py-6">
                     {/* Header */}
-                    <div className="text-3xl text-center my-5 font-semibold">Create New Password</div>
-        
+                    <div className="header-wrapper mb-5 gap-1 flex flex-col">
+                        <div className="text-2xl font-semibold ">Reset Password </div>
+                    </div>
                     <form onSubmit={handleSubmit(submitHandler)}>
                         <div className="flex flex-col gap-5">
                         <Input label="New Password" placeholder="Enter new  password" type="password" {...register("newPassword")} error={errors.newPassword?.message} />

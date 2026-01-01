@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSendRegisterOtpMuation, useVerifyRegisterOtpMutation } from "@/src/hooks";
 import { errorToast, successToast } from "@/src/lib";
 import { useRouter } from "next/navigation";
-
+import { GoogleLoginButton } from "@/src/components";
 
 export default function SignupPage(){
     const router = useRouter();
@@ -82,15 +82,21 @@ export default function SignupPage(){
 
     return (
         <>
-        <div className="mt-30 w-full">
-            <div className="form-wrapper sm:w-1/3 mx-auto border pb-5 px-3 rounded-md shadow-lg mt-10 flex flex-col">
-                {/* Header */}
-                <div className="text-3xl text-center my-5 font-semibold">Sign Up</div>
-    
-                {/* Input Fields */}
-                {!showOtpField && 
-                <form onSubmit={handleSubmit(sendOtpHandler)}>
-                    <div className="flex flex-col gap-5">
+        <div className="mt-30 w-full md:w-1/2 max-w-[500px] flex flex-col items-center justify-center mx-auto overflow-y-visible">
+            <div className="container border-2 border-black rounded-md shadow-lg px-4 py-6">
+            {/* Header */}
+            <div className="header-wrapper mb-5 gap-1 flex flex-col">
+                <div className="text-2xl font-semibold ">Create an account</div>
+                <div className="text-md">Start your freelancing journey today</div>
+            </div>
+            {/* Form */}
+            {/* Input Fields */}
+            {!showOtpField && 
+                <div className="form-wrapper flex items-center justify-center flex-col">
+                <form onSubmit={handleSubmit(sendOtpHandler)} className="w-full">
+                    <div className="w-full mx-auto flex flex-col">
+                    {/* Input Fields */}
+                    <div className=" flex flex-col gap-5">
                     <Input label="Email" placeholder="Enter your email" type="text" {...register("email")} error={errors.email?.message}/>
                     <Input label="Password" placeholder="Enter your password" type="password" {...register("password")} error={errors.password?.message} />
                     <Input label="Confirm Password" placeholder="Enter password again" type="password" {...register("confirmPassword")} error={errors.confirmPassword?.message} />
@@ -99,13 +105,28 @@ export default function SignupPage(){
                         disabled={resendOtpTimer > 0 ? true : isSendOtpRequestPending} 
                         className={`${(isSendOtpRequestPending || resendOtpTimer > 0 )? "cursor-not-allowed" : "cursor-pointer"}`} />
                     </div>
-                    <Link href={"/login"}>
-                        <span className="text-sm hover:underline cursor-pointer flex mt-2 justify-center">Already Have any account?</span>
-                    </Link>
+                    </div>
                     <Error message = {errors.root?.message || ""}/>
                     {resendOtpTimer > 0 && <span className="align-right text-sm underline cursor-pointer" onClick={()=>setShowOtpField(true)}>OTP</span>}
-                </form> 
-                }
+                </form>
+                <div className="w-full">
+                    <div className="relative my-4">
+                        <div className="absolute inset-0 flex items-center ">
+                            <span className="w-full border-t border-border"/>
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-card px-2 text-muted-foreground bg-white">Or continue with</span>
+                        </div>
+                    </div>
+                    <GoogleLoginButton/>
+                </div>
+                <div className="flex items-center justify-end mt-1">
+                    <Link href={"/login"}>
+                        <span className="text-sm cursor-pointer flex mt-2 justify-center">Already Have any account?<span className="hover:underline"> Sign in</span></span>
+                    </Link>
+                </div>
+                </div> 
+            }
                 
                 {showOtpField && 
                     <div className="otp-wrapper">

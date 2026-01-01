@@ -31,8 +31,7 @@ passport.use(
                 name: profile.displayName,
                 email,
                 googleId: profile.id,
-                authProvider: "google",
-                password: email + process.env.GOOGLE_CLIENT_SECRET,
+                authProvider: "google"
             });
             return done(null, user);
         } catch (err) {

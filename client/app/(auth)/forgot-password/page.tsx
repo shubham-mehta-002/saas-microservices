@@ -1,20 +1,18 @@
 'use client';
 import { Input, Button, Error } from "@/src/components"
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { requestOtpType ,resetPasswordType} from "./types";
-import { useForgetPasswordRequestMutation, useResetPasswordMutation } from "@/src/hooks";
+import { requestOtpType } from "./types";
+import { useForgetPasswordRequestMutation } from "@/src/hooks";
 import { successToast } from "@/src/lib";
 import { forgotPasswordRequestSchema , forgotPasswordRequestType} from "@project/shared";
-import { get } from "axios";
-import { email } from "zod";
+import Link from "next/link";
 
 export default function ForgotPasswordPage(){
-    const router = useRouter();
     const {getValues,register,handleSubmit,formState} = useForm<forgotPasswordRequestType>({
         resolver : zodResolver(forgotPasswordRequestSchema)
     })
+
     const forgetPasswordRequestMuation = useForgetPasswordRequestMutation()
 
     const requestOtpClickHandler = (data : requestOtpType) => {
@@ -31,21 +29,25 @@ export default function ForgotPasswordPage(){
     
     return (
         <>
-        <div className="mt-30 w-full">
-            <div className="form-wrapper sm:w-1/3 mx-auto border pb-5 px-3 rounded-md shadow-lg mt-10 flex flex-col">
+        <div className="mt-44 w-full md:w-1/2 max-w-[500px] flex flex-col items-center justify-center mx-auto overflow-y-visible">
+            <div className="container border-2 border-black rounded-md shadow-lg px-4 py-6">
                 {/* Header */}
-                <div className="text-3xl text-center my-5 font-semibold">Reset Password</div>
-
-    
+                <div className="header-wrapper mb-5 gap-1 flex flex-col">
+                    <div className="text-2xl font-semibold ">Forgot Password ? </div>
+                    <div className="text-md">No worries, we'll send you reset instructions</div>
+                </div>
                 {/* Request Reset Password Form  */}
-                <form className="flex flex-col gap-3"
+                <form className="flex flex-col gap-3 items"
                     onSubmit={handleSubmit(requestOtpClickHandler)}>
                     <Input label="Email" placeholder="Enter your email" {...register("email")} type="text" error={formState.errors?.email?.message}/>
-                    <Button type="submit" label={forgetPasswordRequestMuation.isPending ? 'Sending' : 'Send Mail'} className=" text-sm w-fit ml-auto cursor-pointer"/>
+                    <div className="flex items-center justify-center mt-1 ">
+                        <Link href={"/login"} className="flex items-center justify-center">
+                            <span className="text-sm cursor-pointer mt-2  underline">Back to Login Page</span>
+                        </Link>
+                        <Button type="submit" label={forgetPasswordRequestMuation.isPending ? 'Sending' : 'Send Mail'} className=" text-sm w-fit ml-auto cursor-pointer"/>
+                    </div>
                     <Error message={formState.errors?.root?.message || ""}/>
                 </form>
-            
-             
             </div>
         </div>
         </>

@@ -1,11 +1,7 @@
 import Image from "next/image";
 import { Search, ShoppingCart, Heart } from "lucide-react";
-import { DropDown } from "./DropDown";
-import Link from "next/link";
-import { LogoutButton } from "@/src/components";
-
+import { HeaderAuth } from "./HeaderAuth";
 export const Header = () => {
-  const userLoggedIn = false;
 
   return (
     <header className="w-full flex flex-row border-b bg-white sticky top-0 left-0 z-10 shadow-sm pr-4">
@@ -20,40 +16,7 @@ export const Header = () => {
         
         {/* Top links */}
         <div className="flex justify-end items-center gap-2 text-sm">
-          {userLoggedIn && (
-            <div className="px-2 border-r border-gray-300 flex items-center justify-center">Shubham Mehta</div>
-          )}
-          <div className="px-2 hover:text-gray-800 cursor-pointer">About</div>
-          <div className="px-2 hover:text-gray-800 cursor-pointer">Customer Care</div>
-          {!userLoggedIn && (
-            <Link
-              href="/register"
-              className="px-2 border-l border-gray-300 font-semibold hover:text-gray-800"
-            >
-              Sign Up
-            </Link>
-          )}
-          {!userLoggedIn && (
-            <Link
-              href="/login"
-              className="px-2 border-l border-gray-300 font-semibold hover:text-gray-800"
-            >
-              Sign In
-            </Link>
-          )}
-          <LogoutButton />
-          {userLoggedIn && (
-            <div className="px-2 border-l border-gray-300 font-semibold">
-              <DropDown
-                header="My Account"
-                routes={[
-                  { label: "Orders", href: "/orders" },
-                  { label: "Wishlist", href: "/wishlist" },
-                  { label: "Logout", href: "/logout" },
-                ]}
-              />
-            </div>
-          )}
+          <HeaderAuth />
         </div>
 
         {/* Bottom section */}

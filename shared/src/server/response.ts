@@ -1,36 +1,29 @@
 import { Response } from "express";
+import { ApiResponse } from "../universal/types/api-response.type.js";
 
-interface IApiResponse {
+interface IApiResponse<T> {
   statusCode: number;
   message: string;
-  data?: any;
-  error?: any;
+  data?: T;
+  error?: unknown;
   res: Response;
 }
 
-export function sendApiResponse({
+export function sendApiResponse<T>({
   statusCode,
   message,
   data,
   error,
   res,
-}: IApiResponse) {
+}: IApiResponse<T>) {
   const success = Math.floor(statusCode / 100) === 2;
 
-  const responsePayload: any = {
+  const responsePayload: ApiResponse<T> = {
     message,
     success,
+    ...(data !== undefined && {data}),
+    ...(error !== undefined && {error})
   };
-
-  // Include data if present
-  if (data !== undefined) {
-    responsePayload.data = data;
-  }
-
-  // Include error if present
-  if (error !== undefined) {
-    responsePayload.error = error;
-  }
 
   return res.status(statusCode).json(responsePayload);
 }

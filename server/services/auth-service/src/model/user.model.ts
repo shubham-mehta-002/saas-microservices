@@ -2,8 +2,7 @@ import { mongooseInstance } from "@project/shared/server";
 import bcrypt from "bcrypt";
 import jwt,{SignOptions} from "jsonwebtoken";
 import { Document , Model} from "mongoose";
-import { userRoles , authProviders } from "../config/constants.js";
-
+import { userRoles, authProviders } from "@project/shared";
 
 type userRolesType = typeof userRoles[number];
 type authProvidersType = typeof authProviders[number];
@@ -48,10 +47,12 @@ userSchema.pre('save', async function(){
 
 /* ---------- Methods ---------- */
 userSchema.methods.comparePassword = async function (userInputPassword : string) : Promise<boolean>{
+    console.log({userInputPassword})
     return bcrypt.compare(userInputPassword, this.password);
 }
 
 userSchema.methods.generateTokens = function(){
+    console.log({user_id :  this._id , role : this.role})
     const accessToken  = jwt.sign(
         {user_id :  this._id , role : this.role},
         process.env.ACCESS_TOKEN_SECRET as string,
@@ -60,7 +61,7 @@ userSchema.methods.generateTokens = function(){
 
 
     const refreshToken  = jwt.sign(
-        {user_id :  this._id, role:this.role},
+        {user_id :  this._id, role: this.role},
         process.env.REFRESH_TOKEN_SECRET as string,
         {expiresIn : process.env.REFRESH_TOKEN_EXPIRES_IN as SignOptions['expiresIn']}
     )

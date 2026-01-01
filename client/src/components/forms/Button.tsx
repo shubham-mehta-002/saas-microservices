@@ -10,7 +10,7 @@ export function Button({label, type="button", onClick, className,...rest} : Prop
         <button
             type={type}
             onClick={onClick}
-            className={`p-2 border rounded-md  transition duration-200 ${className ?? ""}`}
+            className={`p-[7px] border rounded-md  transition duration-200 ${className ?? ""}`}
             {...rest}
         >
             {label}

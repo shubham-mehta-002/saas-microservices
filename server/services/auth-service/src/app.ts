@@ -4,12 +4,11 @@ import cors from "cors"
 import {errorMiddleware} from "@project/shared/server";
 import authRouter from "./route/auth.route.js";
 import passport from "passport";
+import cookieParser from "cookie-parser"
 import "./config/passport.config.js";
 
 const app = express();
 
-app.use(express.json());
-app.use(passport.initialize());
 
 app.use(cors(
     {
@@ -19,6 +18,9 @@ app.use(cors(
     }
 ))
 
+app.use(express.json());
+app.use(cookieParser()); 
+app.use(passport.initialize());
 
 
 app.use('/',authRouter);
