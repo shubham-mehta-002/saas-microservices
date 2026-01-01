@@ -10,8 +10,8 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm:dev-client\" \"npm:dev-server\"",
-    
-    "dev-service-discovery" : "consul agent -dev",
+
+    "dev-service-discovery": "consul agent -dev",
 
     "dev-client": "npm run dev -w client",
 
@@ -20,11 +20,17 @@
     "dev-auth": "npm run dev -w server/services/auth-service",
     "dev-product": "npm run dev -w server/services/product-service",
 
-    "build": "tsc -b shared && tsc -b server && tsc -b client",
-    
-    "start-auth": "node server/services/auth-service/dist/index.js",
-    "start-product": "node server/services/product-service/dist/index.js",
-    "start-api": "node server/api-gateway/dist/index.js"
+    "build:shared": "tsc -b shared",
+
+    "build:auth": "tsc -b server/services/auth-service",
+    "build:product": "tsc -b server/services/product-service",
+    "build:api": "tsc -b server/api-gateway",
+
+    "start:auth": "node server/services/auth-service/dist/index.js",
+    "start:product": "node server/services/product-service/dist/index.js",
+    "start:api": "node server/api-gateway/dist/index.js",
+
+    "build": "npm run build:shared && npm run build:auth && npm run build:product && npm run build:api"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
