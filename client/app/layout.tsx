@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { Header,QueryClientProviderWrapper ,ToastProvider} from "@/src/components";
+// import { QueryClientProviderWrapper, ToastProvider} from "@/components/providers";
+import { QueryClientProviderWrapper } from "@/src/components";
+import { ToastProvider } from "@/src/components";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -12,12 +14,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
-      <body className="p-4">
+      <body>
         <QueryClientProviderWrapper>
-        <>
+        <> 
           <ToastProvider /> 
           {children}
         </>

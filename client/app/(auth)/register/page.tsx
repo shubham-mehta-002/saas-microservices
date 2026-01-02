@@ -1,5 +1,5 @@
 'use client';
-import { Input, Button, OTPInput ,Error} from "@/src/components"
+import { FormInputWithLabel, OTPInput ,Error} from "@/src/components"
 import Link from "next/link";
 import { MouseEvent, useEffect, useState } from "react";
 import { OTP_LENGTH , registerUserType, registerUserSchema, RESEND_OTP_COOLDOWN} from "@project/shared";
@@ -9,6 +9,7 @@ import { useSendRegisterOtpMuation, useVerifyRegisterOtpMutation } from "@/src/h
 import { errorToast, successToast } from "@/src/lib";
 import { useRouter } from "next/navigation";
 import { GoogleLoginButton } from "@/src/components";
+import { Button } from "@/components/ui/button";
 
 export default function SignupPage(){
     const router = useRouter();
@@ -97,13 +98,14 @@ export default function SignupPage(){
                     <div className="w-full mx-auto flex flex-col">
                     {/* Input Fields */}
                     <div className=" flex flex-col gap-5">
-                    <Input label="Email" placeholder="Enter your email" type="text" {...register("email")} error={errors.email?.message}/>
-                    <Input label="Password" placeholder="Enter your password" type="password" {...register("password")} error={errors.password?.message} />
-                    <Input label="Confirm Password" placeholder="Enter password again" type="password" {...register("confirmPassword")} error={errors.confirmPassword?.message} />
+                    <FormInputWithLabel label="Email" placeholder="Enter your email" type="text" {...register("email")} error={errors.email?.message}/>
+                    <FormInputWithLabel label="Password" placeholder="Enter your password" type="password" {...register("password")} error={errors.password?.message} />
+                    <FormInputWithLabel label="Confirm Password" placeholder="Enter password again" type="password" {...register("confirmPassword")} error={errors.confirmPassword?.message} />
                     <Button type="submit" 
-                        label={resendOtpTimer > 0 ? `Wait for ${resendOtpTimer} seconds` : isSendOtpRequestPending ? "Signing Up ..." : "Sign Up"} 
                         disabled={resendOtpTimer > 0 ? true : isSendOtpRequestPending} 
-                        className={`${(isSendOtpRequestPending || resendOtpTimer > 0 )? "cursor-not-allowed" : "cursor-pointer"}`} />
+                        className={`${(isSendOtpRequestPending || resendOtpTimer > 0 )? "cursor-not-allowed" : "cursor-pointer"}`} >
+                        {resendOtpTimer > 0 ? `Wait for ${resendOtpTimer} seconds` : isSendOtpRequestPending ? "Signing Up ..." : "Sign Up"} 
+                        </Button>
                     </div>
                     </div>
                     <Error message = {errors.root?.message || ""}/>
@@ -115,14 +117,14 @@ export default function SignupPage(){
                             <span className="w-full border-t border-border"/>
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-card px-2 text-muted-foreground bg-white">Or continue with</span>
+                            <span className="px-2 text-muted-foreground bg-white">Or continue with</span>
                         </div>
                     </div>
                     <GoogleLoginButton/>
                 </div>
                 <div className="flex items-center justify-end mt-1">
                     <Link href={"/login"}>
-                        <span className="text-sm cursor-pointer flex mt-2 justify-center">Already Have any account?<span className="hover:underline"> Sign in</span></span>
+                        <span className="text-sm cursor-pointer flex mt-2 justify-center">Already Have any account?<span className="hover:underline text-primary"> Sign in</span></span>
                     </Link>
                 </div>
                 </div> 
@@ -138,9 +140,9 @@ export default function SignupPage(){
                                 otpValue={otp}
                                 setOtpValue={setOtp}
                                 />
-                            <Button type="button" disabled={isVerifyOtpRequestPending} label={isVerifyOtpRequestPending ? "Verifying..." : "Verify OTP"} className={`mt-3 bg-gray-800 text-white hover:bg-gray-700 ${isVerifyOtpRequestPending ? "cursor-not-allowed" : "cursor-pointer"}`} onClick={verifyOtpClickHandler}/>
+                            <Button disabled={isVerifyOtpRequestPending} className={`mt-3 bg-gray-800 text-white hover:bg-gray-700 ${isVerifyOtpRequestPending ? "cursor-not-allowed" : "cursor-pointer"}`} onClick={verifyOtpClickHandler}>{isVerifyOtpRequestPending ? "Verifying..." : "Verify OTP"} </Button>
                             {resendOtpTimer == 0 ? 
-                                <Button type="button" disabled={isSendOtpRequestPending} label={isSendOtpRequestPending ? "Sending OTP" : "Resend OTP"} className="mt-3 bg-green-500 text-white cursor-pointer" onClick={sendOtpHandler}/>
+                                <Button  disabled={isSendOtpRequestPending} className="mt-3 bg-green-500 text-white cursor-pointer" onClick={sendOtpHandler}>{isSendOtpRequestPending ? "Sending OTP" : "Resend OTP"} </Button>
                                 :
                                 <span className="text-red">{resendOtpTimer} seconds</span>
                             }

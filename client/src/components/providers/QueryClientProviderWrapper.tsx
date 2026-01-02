@@ -1,8 +1,7 @@
 'use client';
-import { queryClient } from "../../lib";
 import { QueryClientProvider } from "@tanstack/react-query";
-
-export const QueryClientProviderWrapper = ({children} : Readonly<{children:React.ReactElement}>) => {
+import { queryClient } from "@/src/lib";
+export const QueryClientProviderWrapper = ({children} : Readonly<{children:React.ReactNode}>) => {
     return (
         <QueryClientProvider client={queryClient}>
             {children}

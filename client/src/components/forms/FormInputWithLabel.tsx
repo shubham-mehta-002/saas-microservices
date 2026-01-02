@@ -2,7 +2,7 @@
 import { Eye, EyeOff } from "lucide-react"; 
 import { useState } from "react";
 import { InputHTMLAttributes } from "react";
-import { Error } from "@/src/components";
+import { Error } from "@/components";
 
 type PropsType = { 
   placeholder?: string;
@@ -13,7 +13,7 @@ type PropsType = {
 } & InputHTMLAttributes<HTMLInputElement>;
 
 
-export function Input({ placeholder = "", type = "text", label,onChangeHandler , error, ...rest}: PropsType) {
+export function FormInputWithLabel({ placeholder = "", type = "text", label,onChangeHandler , error, ...rest}: PropsType) {
   
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const inputType = type === "password" ? (showPassword ? "text" : "password") : type

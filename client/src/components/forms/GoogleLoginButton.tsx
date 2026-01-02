@@ -1,5 +1,5 @@
 "use client";
-
+import { Button } from "@/components/ui/button";
 export function GoogleLoginButton() {
     const handleGoogleLogin = () => {
         window.location.href =
@@ -7,9 +7,10 @@ export function GoogleLoginButton() {
     };
 
     return (
-        <button
+        <Button
+            variant="outline"
             onClick={handleGoogleLogin}
-            className="p-[7px] cursor-pointer border rounded-md  transition duration-200 w-full flex items-center justify-center gap-2"
+            className="hover:bg-white p-[7px] cursor-pointer border rounded-md  transition duration-200 w-full flex items-center justify-center gap-2"
         >
         <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
         <path
@@ -30,6 +31,6 @@ export function GoogleLoginButton() {
         />
         </svg>
         Continue with Google
-    </button>
+    </Button>
 );
 }

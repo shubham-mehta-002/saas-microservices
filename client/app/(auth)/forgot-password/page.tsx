@@ -1,5 +1,5 @@
 'use client';
-import { Input, Button, Error } from "@/src/components"
+import { FormInputWithLabel, Error } from "@/src/components"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { requestOtpType } from "./types";
@@ -7,7 +7,7 @@ import { useForgetPasswordRequestMutation } from "@/src/hooks";
 import { successToast } from "@/src/lib";
 import { forgotPasswordRequestSchema , forgotPasswordRequestType} from "@project/shared";
 import Link from "next/link";
-
+import { Button } from "@/components/ui/button";
 export default function ForgotPasswordPage(){
     const {getValues,register,handleSubmit,formState} = useForm<forgotPasswordRequestType>({
         resolver : zodResolver(forgotPasswordRequestSchema)
@@ -39,12 +39,12 @@ export default function ForgotPasswordPage(){
                 {/* Request Reset Password Form  */}
                 <form className="flex flex-col gap-3 items"
                     onSubmit={handleSubmit(requestOtpClickHandler)}>
-                    <Input label="Email" placeholder="Enter your email" {...register("email")} type="text" error={formState.errors?.email?.message}/>
+                    <FormInputWithLabel label="Email" placeholder="Enter your email" {...register("email")} type="text" error={formState.errors?.email?.message}/>
                     <div className="flex items-center justify-center mt-1 ">
                         <Link href={"/login"} className="flex items-center justify-center">
                             <span className="text-sm cursor-pointer mt-2  underline">Back to Login Page</span>
                         </Link>
-                        <Button type="submit" label={forgetPasswordRequestMuation.isPending ? 'Sending' : 'Send Mail'} className=" text-sm w-fit ml-auto cursor-pointer"/>
+                        <Button type="submit" className=" text-sm w-fit ml-auto cursor-pointer">{forgetPasswordRequestMuation.isPending ? 'Sending' : 'Send Mail'}</Button>
                     </div>
                     <Error message={formState.errors?.root?.message || ""}/>
                 </form>

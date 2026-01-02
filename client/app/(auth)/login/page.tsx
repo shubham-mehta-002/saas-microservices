@@ -1,5 +1,5 @@
 'use client';
-import { Input, Button, Error } from "@/src/components"
+import { FormInputWithLabel, Error } from "@/src/components"
 import { useForm } from "react-hook-form";
 import { zodResolver} from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import { useLoginMuations } from "@/src/hooks";
 import { successToast } from "@/src/lib";
 import { useRouter } from "next/navigation";
 import { GoogleLoginButton } from "@/src/components";
-
+import { Button } from "@/components/ui/button";
 export default function LoginPage(){
     const {register, handleSubmit, formState: {errors}} = useForm<loginUserType>({
         resolver : zodResolver(loginUserSchema)
@@ -46,14 +46,14 @@ export default function LoginPage(){
                 <div className="w-full mx-auto flex flex-col">
                     {/* Input Fields */}
                     <div className=" flex flex-col gap-5">
-                        <Input 
+                        <FormInputWithLabel 
                             label="Email" 
                             type="text" 
                             placeholder="Enter your email" 
                             {...register("email")}
                             error = {errors.email?.message}
                         />
-                        <Input 
+                        <FormInputWithLabel 
                             label="Password" 
                             type="password" 
                             placeholder="Enter your password" 
@@ -69,7 +69,9 @@ export default function LoginPage(){
                             <span className="text-sm flex justify-end my-1 hover:underline cursor-pointer">forgot Password?</span>
                         </Link>
                     </div>
-                    <Button label={isLoginPending ? "Logging" : "Log In"} type="submit" disabled={isLoginPending} className={`mt-3 ${isLoginPending ? "cursor-not-allowed" : "cursor-pointer"}`}/>
+                    <Button type="submit" disabled={isLoginPending} className={`bg-primary mt-3 ${isLoginPending ? "cursor-not-allowed" : "cursor-pointer"}`}>
+                        {isLoginPending ? "Logging" : "Log In"} 
+                    </Button>
                 </div>
                 <Error message = {errors.root?.message || ""}/>
                 </form>

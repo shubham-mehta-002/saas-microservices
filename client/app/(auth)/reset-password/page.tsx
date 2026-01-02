@@ -3,10 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import {ResetPasswordFormType,resetPasswordFormSchema} from "./types"
-import { Input,Button, Error } from "@/src/components";
+import { FormInputWithLabel, Error } from "@/src/components";
 import { useResetPasswordMutation } from "@/src/hooks";
 import { errorToast, successToast } from "@/src/lib";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function ResetPasswordPage() {
     const searchParams = useSearchParams();
@@ -59,9 +60,9 @@ export default function ResetPasswordPage() {
                     </div>
                     <form onSubmit={handleSubmit(submitHandler)}>
                         <div className="flex flex-col gap-5">
-                        <Input label="New Password" placeholder="Enter new  password" type="password" {...register("newPassword")} error={errors.newPassword?.message} />
-                        <Input label="Confirm Password" placeholder="Enter password again" type="password" {...register("confirmNewPassword")} error={errors.confirmNewPassword?.message} />
-                        <Button type="submit" label="Reset Password" disabled={resetPasswordMutation.isPending} className={`${resetPasswordMutation.isPending ? 'cursor-not-allowed' : 'cursor-pointer'}`}/>
+                        <FormInputWithLabel label="New Password" placeholder="Enter new  password" type="password" {...register("newPassword")} error={errors.newPassword?.message} />
+                        <FormInputWithLabel label="Confirm Password" placeholder="Enter password again" type="password" {...register("confirmNewPassword")} error={errors.confirmNewPassword?.message} />
+                        <Button type="submit"  disabled={resetPasswordMutation.isPending} className={`${resetPasswordMutation.isPending ? 'cursor-not-allowed' : 'cursor-pointer'}`}>Reset Password</Button>
                         </div>
                         <Error message = {errors.root?.message || ""}/>
                     </form> 
