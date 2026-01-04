@@ -1,0 +1,1 @@
+export {useCompleteProfileMutation} from "./useProfileDetailsMutation";
