@@ -81,7 +81,7 @@ export default function LoginPage(){
                             <span className="w-full border-t border-border"/>
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-card px-2 text-muted-foreground bg-white">Or continue with</span>
+                            <span className="px-2 text-muted-foreground bg-white">Or continue with</span>
                         </div>
                     </div>
                     <GoogleLoginButton/>

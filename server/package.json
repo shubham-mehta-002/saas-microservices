@@ -4,7 +4,7 @@
   "description": "This is a microservice backend for project",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm:dev-api\" \"npm:dev-auth\" \"npm:dev-product\"",
+    "dev": "concurrently \"npm:dev-auth\" \"npm:dev-product\"",
     "dev-service-discovery": "consul agent -dev",
     "dev-api": "nodemon --watch api-gateway/src --ext ts --exec \"tsc -p api-gateway/tsconfig.json && node api-gateway/dist/index.js\"",
     "dev-auth": "nodemon --watch services/auth-service/src --ext ts --exec \"tsc -p services/auth-service/tsconfig.json && node services/auth-service/dist/index.js\"",

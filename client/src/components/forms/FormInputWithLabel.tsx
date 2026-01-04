@@ -2,7 +2,7 @@
 import { Eye, EyeOff } from "lucide-react"; 
 import { useState } from "react";
 import { InputHTMLAttributes } from "react";
-import { Error } from "@/components";
+import { Error } from "./Error";
 
 type PropsType = { 
   placeholder?: string;

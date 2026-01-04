@@ -1,12 +1,12 @@
-import { getUser } from "@/src/services/auth.service";
+import { getUser } from "@/src/services/profile.service";
 import { useQuery } from "@tanstack/react-query";
-import { UserType , ApiResponse } from "@project/shared";
+import { UserModelType , ApiResponse } from "@project/shared";
 
 export const useUserQuery = () => {
     return useQuery<
-        ApiResponse<UserType>,
+        ApiResponse<UserModelType>,
         Error,
-        UserType|undefined
+        UserModelType|undefined
     >({
         queryKey : ["user"],
         queryFn : getUser,

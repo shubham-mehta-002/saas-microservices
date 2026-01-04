@@ -1,20 +1,31 @@
 import proxy from "express-http-proxy";
-// import { getServiceAddress } from "@project/shared/server";
+
+const serviceMap: Record<string, string> = {
+    auth: process.env.AUTH_SERVICE_URL || "http://localhost:8001",
+    college: process.env.AUTH_SERVICE_URL || "http://localhost:8001",
+    user : process.env.AUTH_SERVICE_URL || "http://localhost:8001"
+};
 
 
-export const proxyMiddleware = async(serviceName:string) => {
-    // Get from consul
-    // const {host,port} = await getServiceAddress(serviceName);
-    // console.log({host,port,serviceName});
-    // const port = process.env.PORT;
-    // const host = process.env.HOST;
-
-    let url :string = "";
-    if(serviceName === "auth"){
-        url = process.env.AUTH_SERVICE_URL!
+export const proxyMiddleware = (serviceName: string) => {
+    const url = serviceMap[serviceName];
+    if (!url) {
+        throw new Error(`No service URL defined for ${serviceName}`);
     }
-    
-    // const target = `http://${host}:${port}`;
 
-    return proxy(url);
-}
+    return proxy(url, {
+        proxyReqPathResolver: (req) => {
+        // forward the original path minus the service prefix
+            const pathWithoutPrefix = req.originalUrl.replace(`/${serviceName}`, "");
+            return pathWithoutPrefix || "/";
+        },
+        proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+        // forward headers like auth token
+            proxyReqOpts.headers = {
+                ...proxyReqOpts.headers,
+                authorization: srcReq.headers.authorization || "",
+            };
+        return proxyReqOpts;
+        },
+    });
+};

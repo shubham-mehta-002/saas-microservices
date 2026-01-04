@@ -1,1 +1,3 @@
-export {UserType} from "./user.type.js";
+export * from "./auth.type.js";
+export * from "./college.type.js";
+export * from "./profile.type.js";

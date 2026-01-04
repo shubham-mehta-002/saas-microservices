@@ -1,5 +1,5 @@
 import { userRoles, authProviders } from "../../constants.js";
-export interface UserType {
+export type  UserModelType = {
     _id: string;
     name?: string;
     email: string;

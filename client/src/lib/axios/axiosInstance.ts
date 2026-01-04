@@ -10,7 +10,7 @@ export const axiosInstance = axios.create({
 
 
 // response interceptor - call to refresh token in case of expired access token
-axiosInstance.interceptors.response.use((request) => request ,
+axiosInstance.interceptors.response.use((response) => response ,
     async(error) => {
         // handle only axiosError
         if (!error?.response) {

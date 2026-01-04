@@ -1,7 +1,7 @@
 import { mongooseInstance } from "@project/shared/server";
 import bcrypt from "bcrypt";
 import jwt,{SignOptions} from "jsonwebtoken";
-import { Document , Model} from "mongoose";
+import { Document , Model, Types, Schema} from "mongoose";
 import { userRoles, authProviders } from "@project/shared";
 
 type userRolesType = typeof userRoles[number];
@@ -16,7 +16,10 @@ export interface IUser extends Document {
     avatar? : string,
     authProvider: authProvidersType,
     googleId?: string,
-    // refreshTokens : string[],
+    college? : Types.ObjectId,
+    courseName?:string,
+    yearOfStudy?: number,
+    isProfileCompleted : boolean,
     comparePassword : (userInputPassword : string) => Promise<boolean>,
     generateTokens : () => {accessToken:string, refreshToken:string},
     generateResetPasswordToken : () => string
@@ -31,7 +34,10 @@ const userSchema = new mongooseInstance.Schema<IUser>({
     avatar : {type: String},
     authProvider : { type : String, enum : authProviders, default: "local"},
     googleId :{type:String,index:true,sparse:true},
-    // refreshTokens : [{type:String}]
+    college: { type: Schema.Types.ObjectId, ref: "College" },
+    courseName: {type:String},
+    yearOfStudy : {type:Number},
+    isProfileCompleted : {type : Boolean, default:false}
 },{
     timestamps : true
 })
