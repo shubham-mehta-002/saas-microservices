@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-// import { QueryClientProviderWrapper, ToastProvider} from "@/components/providers";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { QueryClientProviderWrapper } from "@/src/components";
 import { ToastProvider } from "@/src/components";
 import "./globals.css";
@@ -18,6 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <QueryClientProviderWrapper>
+        <ReactQueryDevtools position="bottom"/>
         <> 
           <ToastProvider /> 
           {children}

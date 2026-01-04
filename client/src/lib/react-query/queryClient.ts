@@ -5,6 +5,7 @@ export const queryClient = new QueryClient({
         queries: {
         staleTime : 30_000,
         refetchOnWindowFocus : false,
+        refetchOnMount : false,
         retry: (count, error: any) => {
             const status = error?.response?.status;
 

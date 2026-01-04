@@ -24,9 +24,8 @@ export default function LoginPage(){
         },{
             onSuccess : () => {
                 successToast("Login Successfull")
-                router.push('/')
+                router.push('/profile/complete')
             }
-            
         })
     } 
 

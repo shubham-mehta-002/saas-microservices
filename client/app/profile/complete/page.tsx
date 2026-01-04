@@ -18,6 +18,7 @@ import {
 import { useActiveCollegesQuery } from "@/src/hooks/queries/college/useCollegeQuery"
 import { useCompleteProfileMutation } from "@/src/hooks/mutations/profile"
 import { successToast } from "@/src/lib"
+import { useRouter } from "next/navigation"
 
 export default function ProfileDetailsForm() {
 
@@ -34,10 +35,13 @@ const {
 const { data, isLoading, isError } = useActiveCollegesQuery()
 const completeProfileMuation = useCompleteProfileMutation();
 
+const router = useRouter()
+
 const onSubmit = (data: profileDetailsType) => {
     completeProfileMuation.mutate(data,{
         onSuccess : (res) => {
             successToast(res.message || "Profile Updated")
+            router.replace('/');
         }
     })
 }
