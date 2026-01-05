@@ -158,7 +158,7 @@ export const refreshToken = asyncHandler(async (req:Request, res:Response) =>{
 	}
 
 	const decoded = jwt.verify(refreshToken , process.env.REFRESH_TOKEN_SECRET as string) as JwtPayload;
-	console.log({decoded})
+	
 	if(!decoded || !decoded.user_id || !decoded.role){
 		throw new AuthenticationError("Unauthorized. Invalid Refresh Token")
 	}
@@ -185,30 +185,31 @@ export const refreshToken = asyncHandler(async (req:Request, res:Response) =>{
 })
 
 // google auth
-export const googleAuthCallback = asyncHandler(
-  async (req: Request, res: Response) => {
-    const user = req.user as any;
+export const googleAuthCallback = asyncHandler(	async (req: Request, res: Response) => {
+	const user = req.user;
+	if(!user){
+		return new ValidationError("Unauthorized access");
+	}
+	const { accessToken, refreshToken } = user.generateTokens();
+	// const { password, refreshTokens } = user.toObject();
 
-    const { accessToken, refreshToken } = user.generateTokens();
-    // const { password, refreshTokens } = user.toObject();
+	res.cookie("accessToken", accessToken, {
+		httpOnly: true,
+		secure: true,
+		sameSite: "none",
+		maxAge: 15 * 60 * 1000,
+	});
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 15 * 60 * 1000,
-    });
+	res.cookie("refreshToken", refreshToken, {
+		httpOnly: true,
+		secure: true,
+		sameSite: "none",
+		maxAge: 24 * 60 * 60 * 1000,
+	});
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-
-    return res.redirect(
-      `${process.env.CLIENT_URL}/success`
-    );
-  }
+	return res.redirect(
+		`${process.env.CLIENT_URL}/success`
+	);
+	}
 );
 

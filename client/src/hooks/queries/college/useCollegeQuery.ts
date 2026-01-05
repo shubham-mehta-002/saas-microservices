@@ -1,4 +1,4 @@
-import { getAllActiveColleges, getAllColleges } from "@/src/services/college.service";
+import { getAllActiveCollegesApi, getAllCollegesApi } from "@/src/services/college.service";
 import { useQuery } from "@tanstack/react-query";
 import {COLLEGE_KEYS} from "../../contants";
 import { ApiResponse, CollegeModelType } from "@project/shared";
@@ -10,7 +10,7 @@ export const useCollegesQuery = () => {
         CollegeModelType[]
     >({
         queryKey : COLLEGE_KEYS.allColleges, 
-        queryFn : getAllColleges,
+        queryFn : getAllCollegesApi,
     })
 }
 
@@ -21,7 +21,7 @@ export const useActiveCollegesQuery = () => {
         Error
     >({
         queryKey : COLLEGE_KEYS.allColleges, 
-        queryFn : getAllActiveColleges,
+        queryFn : getAllActiveCollegesApi,
     })
 }
 

@@ -1,5 +1,5 @@
 import {z} from "zod"
-import {registerOtpRequestSchema,loginUserSchema,registerUserSchema, verifyOtpSchema,forgotPasswordRequestSchema,resetPasswordSchema} from "../../schemas/user.zod.js"
+import {registerOtpRequestSchema,loginUserSchema,registerUserSchema, verifyOtpSchema,forgotPasswordRequestSchema,resetPasswordSchema} from "../../schemas/auth.zod.js"
 
 export type registerOtpRequestType = z.infer<typeof registerOtpRequestSchema>
 export type loginUserType = z.infer<typeof loginUserSchema>

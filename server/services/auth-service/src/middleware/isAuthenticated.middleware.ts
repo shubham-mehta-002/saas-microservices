@@ -6,9 +6,8 @@ import { JwtPayload } from "../types/jwtPayload.js";
 
 
 export const isAuthenticated = asyncHandler(async (req:Request, res:Response, next : NextFunction)=>{
-    console.log('asdasdasd',req.cookies)
     const token = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
-    console.log({token})
+    
     if(!token){
         return sendApiResponse({statusCode:401, message : "Unauthorized! Token missing",res});
     }

@@ -3,6 +3,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { InputHTMLAttributes } from "react";
 import { Error } from "./Error";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 type PropsType = { 
   placeholder?: string;
@@ -20,13 +22,13 @@ export function FormInputWithLabel({ placeholder = "", type = "text", label,onCh
 
   return (
     <div className="flex flex-col w-full">
-      <label 
-        className="mb-1 text-sm font-medium text-gray-700"
+      <Label htmlFor={label} 
+        className="mb-1 text-sm font-medium text-muted-foreground"
       >
         {label}
-      </label>
+      </Label>
       <div className="relative">
-      <input
+      <Input
         type={inputType}
         placeholder={placeholder}
         onChange={onChangeHandler}
@@ -42,7 +44,7 @@ export function FormInputWithLabel({ placeholder = "", type = "text", label,onCh
           focus:ring-2 focus:gray-700
           focus:border-transparent
           transition
-          duration-200
+          duration-200S
           "
           />
         {

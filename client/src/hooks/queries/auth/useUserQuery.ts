@@ -1,4 +1,4 @@
-import { getUser } from "@/src/services/profile.service";
+import { getUser } from "@/src/services/user.service";
 import { useQuery } from "@tanstack/react-query";
 import { UserModelType , ApiResponse } from "@project/shared";
 

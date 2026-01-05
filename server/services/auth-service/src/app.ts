@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser"
 import "./config/passport.config.js";
 import authRouter from "./route/auth.route.js";
 import collegeRouter from "./route/college.route.js"
-import userRouter from "./route/auth.route.js";
+import userRouter from "./route/user.route.js";
 
 const app = express();
 
