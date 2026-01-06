@@ -9,7 +9,7 @@ export const isAuthenticated = asyncHandler(async (req:Request, res:Response, ne
     const token = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
     
     if(!token){
-        return sendApiResponse({statusCode:401, message : "Unauthorized! Token missing",res});
+        return sendApiResponse({statusCode:401, message : "Unauthorized!",res});
     }
 
     // verify token

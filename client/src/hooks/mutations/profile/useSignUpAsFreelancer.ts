@@ -8,10 +8,10 @@ export const useSignUpAsFreelancerMutation = () => {
         ApiResponse<void>,
         unknown,
         signUpAsFreelancerType
-    >
-    ({
+    >({
         mutationFn : signUpAsFreelancerApi,
         onError : (error:any) => {
+            console.log("Mutation error" ,{error})
             errorToast(error.response?.data?.message || "Something went wrong")
         }
     })
