@@ -138,15 +138,7 @@ export default function BecomeFreelancerPage() {
 
             {/* Form Steps */}
             <Card className="p-5 md:p-8">
-                <form 
-                    onSubmit={currentStep === 3 ? handleSubmit(onSubmit) : (e) => e.preventDefault()}
-                    onKeyDown={(e) => {
-                        // Prevent Enter key submission except when in step 3
-                        if (e.key === "Enter" && currentStep !== 3) {
-                            e.preventDefault()
-                        }
-                    }}
-                >
+                <form>
                 {/* Step 1: Professional Info */}
                 {currentStep === 1 && (
                     <div className="space-y-6 animate-in fade-in duration-300">
@@ -247,7 +239,7 @@ export default function BecomeFreelancerPage() {
                                     onChange={(e) => setNewSkill(e.target.value)}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
-                                            e.preventDefault()   // prevent form submit
+                                            e.preventDefault()
                                             handleAddSkill()
                                         }
                                     }}
@@ -352,7 +344,19 @@ export default function BecomeFreelancerPage() {
                             <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                     ) : (
-                        <Button type="submit" disabled={signUpAsFreelancerMutation.isPending} className="flex-1">
+                        
+                        <Button 
+                            type="button" 
+                            disabled={signUpAsFreelancerMutation.isPending} 
+                            className="flex-1"
+                            onClick={handleSubmit(onSubmit)}
+                            onKeyDown={(e) => {
+                                if(e.key === "Enter"){
+                                    e.preventDefault();
+                                    handleSubmit(onSubmit)
+                                }
+                            }}
+                        >
                             {signUpAsFreelancerMutation.isPending ? "Upgrading..." : "Become a Freelancer"}
                         </Button>
                     )}
