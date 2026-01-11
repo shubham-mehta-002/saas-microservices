@@ -9,7 +9,7 @@ export const forceLogout = async () => {
     } finally {
         errorToast("Session expired. Please login again.");
 
-    // Safe redirect outside React
+    // Safe redirect
     window.location.href = "/login";
     }
 };

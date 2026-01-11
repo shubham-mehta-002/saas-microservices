@@ -1,8 +1,9 @@
-import { asyncHandler, sendApiResponse, ValidationError } from "@project/shared/server";
+import { asyncHandler, mongooseInstance, sendApiResponse, ValidationError } from "@project/shared/server";
 import { Request, Response } from "express";
 import { profileDetailsSchema, signUpAsFreelancerSchema } from "@project/shared";
-import {  User } from "../model/user.model.js";
+import {  IUser, User } from "../model/user.model.js";
 import { Freelancer } from "../model/freelancer.model.js";
+import { userRoles } from "@project/shared";
 
 export const getUser = asyncHandler(async(req:Request,res:Response) => {
     const {user} = req; // user populated by Middleware 
@@ -46,7 +47,34 @@ export const signUpAsFreelancer = asyncHandler(async(req:Request , res:Response)
     const parsedBody = signUpAsFreelancerSchema.parse(req.body);
     const {_id : userId} = user;
 
-    await Freelancer.create({userId , ...parsedBody})
+    const existing = await Freelancer.findOne({ userId });
+    if (existing) {
+        throw new ValidationError("Already registered as freelancer");
+    }
+
+    const newRole : typeof userRoles[number] = "freelancer";
+
+    // Transaction management
+    const session = await mongooseInstance.startSession();
+    session.startTransaction();
+
+    try {
+        await Freelancer.create([{ userId, ...parsedBody }], { session });
+
+        await User.findByIdAndUpdate(
+            userId,
+            { role: newRole },
+            { session }
+        );
+
+        await session.commitTransaction();
+    } catch (err) {
+        await session.abortTransaction();
+        throw err;
+    } finally {
+        session.endSession();
+    }
+
 
     return sendApiResponse({
         statusCode : 201,
