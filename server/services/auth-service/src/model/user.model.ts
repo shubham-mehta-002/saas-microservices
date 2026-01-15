@@ -9,7 +9,7 @@ type authProvidersType = typeof authProviders[number];
 
 /* ---------- Interface ---------- */
 export interface IUser extends Document {
-    _id: Types.ObjectId;
+    // _id: Types.ObjectId;
     name? : string,
     email : string,
     password? : string,
@@ -30,7 +30,7 @@ export interface IUser extends Document {
 const userSchema = new mongooseInstance.Schema<IUser>({
     name: { type: String },
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true ,select:false},
+    password: { type: String, required: false ,select:false},
     role : {type: String, enum: userRoles ,default : 'user'},
     avatar : {type: String},
     authProvider : { type : String, enum : authProviders, default: "local"},
@@ -61,14 +61,14 @@ userSchema.methods.comparePassword = async function (userInputPassword : string)
 userSchema.methods.generateTokens = function(){
     console.log({user_id :  this._id , role : this.role})
     const accessToken  = jwt.sign(
-        {user_id :  this._id , role : this.role},
+        {user_id :  this._id , role : this.role, college : this.college},
         process.env.ACCESS_TOKEN_SECRET as string,
         {expiresIn : process.env.ACCESS_TOKEN_EXPIRES_IN as SignOptions['expiresIn']}
     )
 
 
     const refreshToken  = jwt.sign(
-        {user_id :  this._id, role: this.role},
+        {user_id :  this._id, role: this.role, college : this.college},
         process.env.REFRESH_TOKEN_SECRET as string,
         {expiresIn : process.env.REFRESH_TOKEN_EXPIRES_IN as SignOptions['expiresIn']}
     )

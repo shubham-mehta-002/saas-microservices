@@ -1,7 +1,7 @@
 import { asyncHandler, mongooseInstance, sendApiResponse, ValidationError } from "@project/shared/server";
 import { Request, Response } from "express";
 import { profileDetailsSchema, signUpAsFreelancerSchema } from "@project/shared";
-import {  IUser, User } from "../model/user.model.js";
+import {  User } from "../model/user.model.js";
 import { Freelancer } from "../model/freelancer.model.js";
 import { userRoles } from "@project/shared";
 
@@ -63,7 +63,7 @@ export const signUpAsFreelancer = asyncHandler(async(req:Request , res:Response)
 
         await User.findByIdAndUpdate(
             userId,
-            { role: newRole },
+            { role: newRole, isProfileCompleted : true },
             { session }
         );
 
