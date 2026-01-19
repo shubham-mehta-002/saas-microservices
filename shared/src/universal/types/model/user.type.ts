@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { userRoles, authProviders } from "../../constants.js";
 export type  UserModelType = {
     _id: string;
@@ -9,4 +10,9 @@ export type  UserModelType = {
     googleId?: string;
     createdAt: string; // Date get serialized in HTTP response 
     updatedAt: string;
+    isProfileCompleted: boolean;
+    yearOfStudy: number;
+    courseName: string;
+    college: Types.ObjectId
 }
+

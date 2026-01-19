@@ -1,7 +1,7 @@
 import { mongooseInstance } from "@project/shared/server";
 import { Document , Model, Types, Schema} from "mongoose";
 import { gigStatus } from "@project/shared";
-import { gigStatusType } from "../gig.types.js";
+import { gigStatusType } from "../types/index.js";
 
 /* ---------- Interface ---------- */
 export interface IGig extends Document{
