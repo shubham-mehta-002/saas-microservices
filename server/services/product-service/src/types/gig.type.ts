@@ -1,8 +1,4 @@
-export type ListGigsType = {
-    category? : string,
-    search? : string,
-}
+import { gigStatus } from "@project/shared"
 
-export type GigDetailsType = {
-    gigId : string
-}
+
+export type gigStatusType = typeof gigStatus[number];

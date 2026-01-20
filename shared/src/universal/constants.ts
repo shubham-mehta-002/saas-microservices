@@ -7,4 +7,4 @@ export const authProviders = ['local', 'google', 'github'] as const;
 export const freelancerAvailablity = ['Full time', 'Part time' , 'Specific Projects only'] as const;
 
 export const gigStatus = ['open' , 'in_progress' , 'completed', 'closed'] as const;
-export const gigApplicationStatus = ["applied","shortlisted","accepted","rejected"] as const;
+export const proposalStatus = ["applied","shortlisted","accepted","rejected"] as const;

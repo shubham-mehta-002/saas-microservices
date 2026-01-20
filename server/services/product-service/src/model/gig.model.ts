@@ -20,10 +20,10 @@ export interface IGig extends Document{
 const gigSchema = new Schema<IGig>({
     title: { type: String, required: true },
     description: { type: String, required: true },
-    budget: { type: Number, required: true },
     category: { type: String },
     skillsRequired: { type: [String], default: [] }, 
-    createdBy: { type: Schema.Types.ObjectId, required: true, index: true },
+    budget: { type: Number, required: true },
+    createdBy: { type: Schema.Types.ObjectId, required: true, index: true }, // client user
     collegeId: { type: Schema.Types.ObjectId, required: true, index: true },
     status: { type: String, enum: gigStatus, default: "open"},
     selectedFreelancerId: { type: Schema.Types.ObjectId }
