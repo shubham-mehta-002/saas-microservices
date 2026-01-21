@@ -1,5 +1,5 @@
 import { AuthenticationError } from "@project/shared/server";
-import { applyToGigSchema } from "@project/shared";
+import { applyToGigSchema, userRoles } from "@project/shared";
 import { asyncHandler, NotFoundError, sendApiResponse, ValidationError } from "@project/shared/server";
 import mongoose from "mongoose";
 import { Gig } from "../model/gig.model.js";
@@ -10,7 +10,7 @@ export const applyToGig = asyncHandler(async (req: Request, res: Response) => {
     const {userId, role} = req.user;
     
     // Only freelancers can apply
-    if (role !== "FREELANCER") {
+    if (role !== userRoles.FREELANCER) {
         throw new AuthenticationError("Only freelancers can apply to gigs");
     }
 

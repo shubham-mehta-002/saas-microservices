@@ -1,6 +1,6 @@
 import { asyncHandler, NotFoundError, sendApiResponse} from "@project/shared/server";
 import type { Request, Response } from "express";
-import {  createGigSchema } from "@project/shared";
+import {  createGigSchema, userRoles } from "@project/shared";
 import { Gig, IGig } from "../model/gig.model.js";
 import { FilterQuery } from "mongoose";
 import { AuthenticationError } from "@project/shared/server";
@@ -56,11 +56,31 @@ export const listGigs = asyncHandler(async(req:Request, res:Response)=>{
 })
 
 
+export const getGigsDetails = asyncHandler(async(req:Request,res:Response)=>{
+    const {gigId} = req.params
+    
+    const gig = await Gig.findOne({
+        _id : gigId
+    });
+
+    if(!gig){
+        throw new NotFoundError("Gig not found");
+    }
+
+    return sendApiResponse({
+        statusCode : 200,
+        data : gig,
+        message : "Gig details fetched",
+        res
+    })
+})
+
+
 export const createGig = asyncHandler(async(req:Request, res:Response) => {
     const {userId,collegeId, role} = req.user;
 
     // check if the role is USER 
-    if(role !== "USER"){
+    if(role !== userRoles.USER){
         throw new AuthenticationError("You are not authorized to post gigs");
     }
     const parsedData = createGigSchema.parse(req.body)
@@ -77,26 +97,6 @@ export const createGig = asyncHandler(async(req:Request, res:Response) => {
         statusCode : 201,
         message :"Gig create successfully",
         data : newGig,
-        res
-    })
-})
-
-
-export const getGigsDetails = asyncHandler(async(req:Request,res:Response)=>{
-    const {gigId} = req.params
-    console.log({gigId})
-    const gig = await Gig.findOne({
-        _id : gigId
-    });
-
-    if(!gig){
-        throw new NotFoundError("Gig not found");
-    }
-
-    return sendApiResponse({
-        statusCode : 200,
-        data : gig,
-        message : "Gig details fetched",
         res
     })
 })
