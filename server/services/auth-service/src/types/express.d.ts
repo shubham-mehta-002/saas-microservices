@@ -1,13 +1,16 @@
-import { IUser } from "../model/user.model.ts";
+// types/express.d.ts
+export interface GatewayUser {
+    userId: string;
+    role: string;
+    collegeId: string;
+}
 
 declare global {
-namespace Express {
-    interface User extends IUser {}
-
-    interface Request {
-        user: IUser;
+    namespace Express {
+        interface Request {
+            user?: GatewayUser;
+        }
     }
-}
 }
 
 export {};

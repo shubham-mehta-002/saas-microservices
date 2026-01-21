@@ -2,9 +2,9 @@ import { mongooseInstance } from "@project/shared/server";
 import bcrypt from "bcrypt";
 import jwt,{SignOptions} from "jsonwebtoken";
 import { Document , Model, Types, Schema} from "mongoose";
-import { userRoles, authProviders } from "@project/shared";
+import { userRoles, authProviders, userRolesType } from "@project/shared";
 
-type userRolesType = typeof userRoles[number];
+
 type authProvidersType = typeof authProviders[number];
 
 /* ---------- Interface ---------- */

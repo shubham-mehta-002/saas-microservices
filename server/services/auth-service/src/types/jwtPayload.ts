@@ -1,6 +1,6 @@
-import { userRoles } from "../config/constants.js"
+import { userRolesType } from "@project/shared"
 
 export type JwtPayload = {
     user_id : string,
-    role : typeof userRoles[number]
+    role : userRolesType
 } 

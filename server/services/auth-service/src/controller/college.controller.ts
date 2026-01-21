@@ -1,7 +1,8 @@
-import { asyncHandler, sendApiResponse, ValidationError } from "@project/shared/server";
+import { asyncHandler, AuthenticationError, sendApiResponse, ValidationError } from "@project/shared/server";
 import { College } from "../model/college.model.js";
 import { Request, Response } from "express";
 import { createCollegeSchema, toggleCollegeActiveStatusSchema } from "@project/shared";
+import { GatewayUser } from "../types/express.js";
 
 export const getAllColleges = asyncHandler(async(_req:Request, res:Response) => {
     const colleges = await College.find({});
@@ -24,6 +25,11 @@ export const getAllActiveColleges = asyncHandler(async(_req:Request, res:Respons
 })
 
 export const createCollege = asyncHandler(async(req:Request,res:Response) => {
+    const { role} = req.user as GatewayUser;
+
+    if (role !== "ADMIN") {
+        throw new AuthenticationError("Only admins can create colleges");
+    }
     const {name,campus} = createCollegeSchema.parse(req.body);
     const exisitingCollege = await College.findOne({
         name, campus

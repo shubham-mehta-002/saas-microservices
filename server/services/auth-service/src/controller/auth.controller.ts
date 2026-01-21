@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { loginUserSchema, registerOtpRequestSchema , verifyOtpSchema, forgotPasswordRequestSchema, resetPasswordSchema } from "@project/shared"
-import {User} from "../model/user.model.js";
+import {IUser, User} from "../model/user.model.js";
 import { asyncHandler, ValidationError,sendApiResponse , redisClient, AuthenticationError} from "@project/shared/server";
 import {checkOtpRestrictions, sendForgetPasswordRequestMailHepler, sendOtp, verifyOtp} from "../utils/auth.helper.js";
 import jwt from "jsonwebtoken";
@@ -186,7 +186,7 @@ export const refreshToken = asyncHandler(async (req:Request, res:Response) =>{
 
 // google auth
 export const googleAuthCallback = asyncHandler(	async (req: Request, res: Response) => {
-	const user = req.user;
+	const user = req.user as IUser;
 	if(!user){
 		return new ValidationError("Unauthorized access");
 	}

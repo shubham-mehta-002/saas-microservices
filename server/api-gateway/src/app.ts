@@ -45,7 +45,10 @@ const setupProxies = async () => {
     const gigProxy = proxyMiddleware("gig");
 
     app.use("/auth", authProxy);
-    app.use("/college", collegeProxy);
+
+    // COLLEGE SERVICE
+    app.use("/college/public", collegeProxy);               //  no auth needed
+    app.use("/college/admin", requireAuth, collegeProxy);   //  protected -> for admin use only
 
     // USER SERVICE
     app.use("/user", requireAuth, userProxy);

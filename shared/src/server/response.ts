@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { ApiResponse } from "../universal/types/api-response.type.js";
+import { ApiResponse } from "../universal/types/general/api-response.type.js";
 
 interface IApiResponse<T> {
   statusCode: number;

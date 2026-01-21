@@ -1,10 +1,11 @@
 import { Types } from "mongoose";
-import { userRoles, authProviders } from "../../constants.js";
+import {  authProviders } from "../../constants.js";
+import { userRolesType } from "../general/auth.type.js";
 export type  UserModelType = {
     _id: string;
     name?: string;
     email: string;
-    role: typeof userRoles[number];
+    role: userRolesType;
     avatar?: string;
     authProvider: typeof authProviders[number]
     googleId?: string;
