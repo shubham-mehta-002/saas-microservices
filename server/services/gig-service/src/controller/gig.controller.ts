@@ -1,9 +1,8 @@
-import { asyncHandler, NotFoundError, sendApiResponse, ValidationError } from "@project/shared/server";
+import { asyncHandler, NotFoundError, sendApiResponse} from "@project/shared/server";
 import type { Request, Response } from "express";
-import { applyToGigSchema, createGigSchema } from "shared/src/universal/schemas/gig.zod.js";
+import {  createGigSchema } from "@project/shared";
 import { Gig, IGig } from "../model/gig.model.js";
-import mongoose, { FilterQuery } from "mongoose";
-import { Proposal } from "../model/proposal.model.js";
+import { FilterQuery } from "mongoose";
 import { AuthenticationError } from "@project/shared/server";
 
 export const listGigs = asyncHandler(async(req:Request, res:Response)=>{
@@ -58,13 +57,13 @@ export const listGigs = asyncHandler(async(req:Request, res:Response)=>{
 
 
 export const createGig = asyncHandler(async(req:Request, res:Response) => {
+    const {userId,collegeId, role} = req.user;
+
     // check if the role is USER 
-    if(!(req.user.role === "USER")){
+    if(role !== "USER"){
         throw new AuthenticationError("You are not authorized to post gigs");
     }
     const parsedData = createGigSchema.parse(req.body)
-    const user = req.user;
-    const {_id : userId, college :collegeId} = user;
 
     const newGig = await Gig.create({
         ...parsedData,
@@ -85,7 +84,7 @@ export const createGig = asyncHandler(async(req:Request, res:Response) => {
 
 export const getGigsDetails = asyncHandler(async(req:Request,res:Response)=>{
     const {gigId} = req.params
-
+    console.log({gigId})
     const gig = await Gig.findOne({
         _id : gigId
     });
@@ -102,67 +101,3 @@ export const getGigsDetails = asyncHandler(async(req:Request,res:Response)=>{
     })
 })
 
-export const applyToGig = asyncHandler(async (req: Request, res: Response) => {
-
-    // Only freelancers can apply
-    if (req.user.role !== "FREELANCER") {
-        throw new AuthenticationError("Only freelancers can apply to gigs");
-    }
-
-    const parsedBody = applyToGigSchema.parse(req.body);
-    const { bidAmount, proposal } = parsedBody;
-
-    const userId = req.user.userId;
-    const gigId = req.params.id;
-
-    const session = await mongoose.startSession();
-
-    let createdProposal: any = null;
-
-    try {
-        await session.withTransaction(async () => {
-
-            const gig = await Gig.findById(gigId).session(session);
-
-            if (!gig) {
-                throw new NotFoundError("Gig not found");
-            }
-
-            if (gig.createdBy.toString() === userId.toString()) {
-                throw new ValidationError("You can't apply to your own gig");
-            }
-
-            if (gig.status !== "open") {
-                throw new ValidationError("Gig is not open");
-            }
-
-            const alreadyApplied = await Proposal.findOne({
-                gigId: gig._id,
-                freelancerId: userId
-            }).session(session);
-
-            if (alreadyApplied) {
-                throw new ValidationError("You have already applied to this gig");
-            }
-
-            const created = await Proposal.create([{
-                gigId: gig._id,
-                freelancerId: userId,
-                proposal,
-                bidAmount
-            }], { session });
-
-            createdProposal = created[0]; 
-        });
-
-        return sendApiResponse({
-            statusCode: 201,
-            message: "Applied to gig successfully",
-            data: createdProposal, 
-            res
-        });
-
-    } finally {
-        session.endSession();
-    }
-});

@@ -1,6 +1,7 @@
 import { Document, Model, Types } from "mongoose";
 import { Schema } from "mongoose";
-import { proposalStatus, ProposalStatusType } from "@project/shared";
+import { proposalStatus } from "@project/shared";
+import type {ProposalStatusType} from "@project/shared"
 import { mongooseInstance } from "@project/shared/server";
 
 /* ---------- Interface ---------- */

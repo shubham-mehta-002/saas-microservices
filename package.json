@@ -12,22 +12,22 @@
     "dev": "concurrently \"npm:dev-client\" \"npm:dev-server\"",
     "dev-client": "npm run dev -w client",
 
-    "dev-server": "concurrently \"npm:dev-auth\" \"npm:dev-product\"",
+    "dev-server": "concurrently \"npm:dev-auth\" \"npm:dev-gig\"",
     "dev-api": "npm run dev -w server/api-gateway",
     "dev-auth": "npm run dev -w server/services/auth-service",
-    "dev-product": "npm run dev -w server/services/product-service",
+    "dev-gig": "npm run dev -w server/services/gig-service",
 
     "build:shared": "tsc -b shared",
 
     "build:auth": "tsc -b server/services/auth-service",
-    "build:product": "tsc -b server/services/product-service",
+    "build:gig": "tsc -b server/services/gig-service",
     "build:api": "tsc -b server/api-gateway",
 
     "start:auth": "node server/services/auth-service/dist/index.js",
-    "start:product": "node server/services/product-service/dist/index.js",
+    "start:gig": "node server/services/gig-service/dist/index.js",
     "start:api": "node server/api-gateway/dist/index.js",
 
-    "build": "npm run build:shared && npm run build:auth && npm run build:product && npm run build:api"
+    "build": "npm run build:shared && npm run build:auth && npm run build:gig && npm run build:api"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",

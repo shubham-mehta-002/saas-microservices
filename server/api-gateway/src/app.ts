@@ -3,7 +3,7 @@ import cors from "cors";
 import type { Request, Response } from "express";
 import express from "express";
 import { ipKeyGenerator, rateLimit } from "express-rate-limit";
-import { proxyMiddleware } from "./proxyMiddleware.js";
+import { proxyMiddleware, requireAuth } from "./middleware/index.js";
 import { RateLimitError } from "@project/shared/server";
 import { errorMiddleware } from "@project/shared/server";
 
@@ -39,22 +39,25 @@ console.log(typeof limiter)
 
 
 const setupProxies = async () => {
-  const authProxy = proxyMiddleware("auth");
-  const collegeProxy = proxyMiddleware("college");
-  const userProxy = proxyMiddleware("user");
-//   const productProxy = await proxyMiddleware("product-service");
+    const authProxy = proxyMiddleware("auth");
+    const collegeProxy = proxyMiddleware("college");
+    const userProxy = proxyMiddleware("user");
+    const gigProxy = proxyMiddleware("gig");
 
-  app.use("/auth", authProxy);
-  app.use('/college',collegeProxy)
-  app.use("/user",userProxy)
-//   app.use("/product", productProxy);
+    app.use("/auth", authProxy);
+    app.use("/college", collegeProxy);
+
+    // USER SERVICE
+    app.use("/user", requireAuth, userProxy);
+
+    // GIG SERVICE
+    app.use("/gig/public", gigProxy);                //  no auth needed
+    app.use("/gig/private", requireAuth, gigProxy);  //  protected
 };
 
 setupProxies(); 
 
-// app.use('/auth' , proxy("http://localhost:8001"))
-// app.use('/product' , proxy("http://localhost:8002"))
- 
+
 app.use(errorMiddleware)
 
 app.get('/',(_req : Request,res:Response) => {
